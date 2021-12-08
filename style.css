@@ -79,12 +79,12 @@ strong {
 #vis {
     display: inline-block;
     position: fixed;
-    top: 20px;
+    top: 0px;
     z-index: 1;
-    height: 1000px;
-    width: 1000px;
-    margin-left: auto;
-    margin-right: width/5;
+    margin-left: 0;
+    height: 800px;
+    width: 800px;
+}
 
     /* position: sticky;
 	width: 100%;
@@ -92,7 +92,7 @@ strong {
 	margin: 0;
 	top: 0;
 	left: 0; */
-}
+
 
 .tick line {
     stroke: 'red'
