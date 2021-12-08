@@ -21,7 +21,6 @@ var svg = d3.select("#vis")
         .attr('height', 750);
 
 d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-//d3.json("https://github.com/chav-ngvyen/clustering_d3/blob/main/GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     dataset = d
     console.log(dataset)
     drawInitial()

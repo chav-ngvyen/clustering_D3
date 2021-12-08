@@ -62,7 +62,9 @@ h1, h2 {
 h1 {
     font-size: 35px;
     font-family: 'Epilogue', sans-serif;
-}
+    text-align: center;
+    margin-bottom: 3rem;
+  }
 
 strong {
     color: rgb(245, 155, 155);
