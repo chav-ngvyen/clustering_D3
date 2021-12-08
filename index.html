@@ -7,67 +7,56 @@
     <!-- call to style.css for additional formatting -->
     <link rel = "stylesheet" href="style.css">
     
-    <!-- call to D3.js to use framework -->
+    <!-- call to D3.js to use framework 
     <script src = 'https://d3js.org/d3.v7.min.js'></script>
+    -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
     
     <!-- meta data -->
-    <meta property = 'og:title' content='PPOL 563: Machine Learning Visualization'/>
-    <meta property = 'og:description' content='Visualization for Graph Machine Learning'/>
-    <meta property = 'og:url' content='https://vegalla.github.io/ppol_563_ml_viz/'/> 
-
+    <meta property = 'og:title' content='PPOL 563: Final Project'/>
+    <meta property = 'og:description' content='Demonstrating clustering algorithms with scrollyboard'/>
+    <meta property = 'og:url' content='https://github.com/chav-ngvyen/clustering_d3/'/> 
+    <!-- Ignore Favicon error on Firefox-->
+    <link rel="icon" href="data:;base64,=">
     <!-- title -->
     <title>Clustering</title>
 </head>
 
 <body>
-    
-    <!--div for tool tips-->
-    <div id = 'tooltip'></div>
+    <div id="graphic">
+        <div class="container">
+          <div id="div1">
+            <h2>On <strong>Step one</strong> step one <strong>Step one</strong> Step one.</h2>
+          </div>
 
-    <div id = "graphic">
-        <!-- div for left hand side (text content) -->
-        <div id = "sections">
-            <!-- index 1 -->
-            <section class = "step">
-                <div class = "title"></div>
-                <!-- The following line is the first instance of a line break; without line breaks text will wrap as a single block -->
-                <br>
-                <h1>Interactive Clustering Demonstration</h1>
-                
-                <p>By Chau Nguyen</p>
-                
-                <p>
-                <br><br>
-                Step 1
-                </p>
+          <div id="div2">
+            <h2>Step two <strong>Step two</strong> Step two <strong>Step two</strong> Step two.</h2>
+            <p></p>
+          </div>
 
-            </section>
+          <div id="div4">
+            <h2><strong>Step four</strong> Step four <strong>Step four</strong> Step four <strong>7</strong> Step four</h2>
+          </div>
+          <div id="div6">
+            <h2>Step six <strong>12</strong> Step six <strong>Step six3</strong> Step six.</h2>
+          </div>
+          
+        </div>
+      
+      
+        <!-- svg -->
+        <div class="fixed"><svg id="viz" width="100%" height="100%"></svg></div>
+      
+      </div><!-- /graphic -->
 
-            <!-- index 2 -->
-            <section class = 'step'>
-                <p>
-                Step 2
-                </p>
-            </section>
-
-            <!-- index 2 -->
-            <section class = 'step'>
-                <p>
-                Step 3
-                </p>
-            </section>
-
-
-        <!--div for right hand graphics-->
-        <div id = "vis">
-
-        </div> <!-- End of div for graphics-->
-
-    </div> <!--End of tool tip-->
-
-    <!-- Calls to add additional JavaScript functions-->
+    <!-- 
     <script src = 'scroller.js'></script>
-
     <script src = 'sections.js'></script>
+    -->
+    <script src = 'graphic.js'></script>
+
+
 </body>
 </html>

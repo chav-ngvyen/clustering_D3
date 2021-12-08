@@ -1,128 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Sora:wght@100&display=swap');
-
-body {
-    background-color: #46535E;
-    overflow-x: hidden;
+<style>
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,600');
+*{
+margin:0;
+padding:0;
 }
-
-#sections {
-    position: relative;
-    display: inline-block;
-    width: 400px;
-    top: 60px;
-    z-index: 90;
-    margin-right: 50px;
+html,
+body{
+ height: 100%;
+ padding: 0;
+ scroll-behavior: smooth;
+ background: #f7f5f2;
+ color: #666;
+ font-family: 'Open Sans', sans-serif;
+ font-weight: 300;
 }
-
-.step {
-    margin-bottom: 100px;
-    height: 700px;
-    font-family: "Sora", sans-serif;
-    font-weight: 400;
-    line-height: 1.4em;
-    text-align: justify;
-
-    /* display: flex;
-    flex-direction: column;
-    justify-content: space-around; */
+h2{
+line-height: 1.25;
+padding-top: 45px;
+font-weight: 300;
 }
-/* .step {
-    min-height: 67vh;
-    margin-bottom: 1rem;
-    transition background-color: 250ms; ease-in-out
-    &:last-of-type
-    margin-bottom 0
-    &.is-active
-    background-color $secondary
+svg{
+padding: 20px;
 }
-p
-    margin 0
-    padding 1rem
-    text-align center
-    font-weight 400
-    color $off-white
-    set-type-size(large) */
-
-/* figure.sticky
-	position sticky
-	width 100%
-	height 50vh
-	background $gray
-	margin 0
-	top 25vh
-	left 0 */
-    
-h1, h2 {
-    font-weight: 700;
-    text-align: right;
-    line-height: 32px;
-    font-family: 'Epilogue', sans-serif;
+text{
+font-size: 10px;
 }
-
-h1 {
-    font-size: 35px;
-    font-family: 'Epilogue', sans-serif;
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-strong {
-    color: rgb(245, 155, 155);
+strong{
+font-weight: 600;
 }
-
 #graphic {
-    margin: auto;
-    width: 1500px;
-    flex-direction: row;
-    align-items: top;
-    justify-content: space-around;
+max-width:  1440px;
+width: 100%;
+position:   relative; 
+height:  100%;
+position:  relative; 
+margin:auto;
 }
-
-#vis {
-    display: inline-block;
-    position: fixed;
-    top: 0px;
-    z-index: 1;
-    margin-left: 0;
-    height: 800px;
-    width: 800px;
+.container {
+height: 100%;
+max-width: 440px;
+width: 100%;
+margin: 0;
+padding: 0;
+position: absolute;
+height: 100%;
+line-height: 1.5;
+left: 500px;
 }
-
-    /* position: sticky;
-	width: 100%;
-	height: 50vh;
-	margin: 0;
-	top: 0;
-	left: 0; */
-
-
-.tick line {
-    stroke: 'red'
+.container div {
+height: 100%;
+display: block;
+padding: 0 45px;
 }
-
-#tooltip {
-    position: absolute;
-    display: none;
-    background: rgba(0, 0, 0, .7);
-    border-radius: 3px;
-    box-shadow: -3px 3px 15px #939393;
-    color: white;
-    padding: 6px;
-    font-family: "Merriweather";
-    font-size: 1.1em;
-    max-width: 400px;
-    z-index: 100;
+.fixed {
+position: fixed;
+max-width: 500px;
+height: 500px;
+top: 50px;
 }
-
-svg circle:hover{
-    cursor: pointer;
-}
-
-.swatch {
-    fill: #939393;
-}
-
-a {
-    color: rgb(221, 0, 255);
-    text-decoration: none;
-}
+</style>
