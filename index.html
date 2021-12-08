@@ -1,11 +1,72 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My GitHub Pages Site</title>
-  </head>
-  <body>
-    <h1>Hello world!</h1>
-    <p>Welcome to my GitHub Pages site!</p>
-  </body>
-</html>
+<!doctype html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- call to style.css for additional formatting -->
+    <link rel = "stylesheet" href="style.css">
+    
+    <!-- call to D3.js to use framework -->
+    <script src = 'https://d3js.org/d3.v7.min.js'></script>
+    
+    <!-- meta data -->
+    <meta property = 'og:title' content='PPOL 563: Machine Learning Visualization'/>
+    <meta property = 'og:description' content='Visualization for Graph Machine Learning'/>
+    <meta property = 'og:url' content='https://vegalla.github.io/ppol_563_ml_viz/'/> 
+
+    <!-- title -->
+    <title>Clustering</title>
+</head>
+
+<body>
+    <!--div for tool tips-->
+    <div id = 'tooltip'></div>
+
+    <div id = "graphic">
+        <!-- div for left hand side (text content) -->
+        <div id = "sections">
+            <!-- index 1 -->
+            <section class = "step">
+                <div class = "title"></div>
+                <!-- The following line is the first instance of a line break; without line breaks text will wrap as a single block -->
+                <br>
+                <h1>Interactive Clustering Demonstration</h1>
+                
+                <p>By Chau Nguyen</p>
+                
+                <p>
+                <br><br>
+                Step 1
+                </p>
+
+            </section>
+
+            <!-- index 2 -->
+            <section class = 'step'>
+                <p>
+                Step 2
+                </p>
+            </section>
+
+            <!-- index 2 -->
+            <section class = 'step'>
+                <p>
+                Step 3
+                </p>
+            </section>
+
+
+        <!--div for right hand graphics-->
+        <div id = "vis">
+
+        </div> <!-- End of div for graphics-->
+
+    </div> <!--End of tool tip-->
+
+    <!-- Calls to add additional JavaScript functions-->
+    <script src = 'scroller.js'></script>
+
+    <script src = 'sections.js'></script>
+</body>
+</html>
