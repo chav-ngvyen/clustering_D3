@@ -38,21 +38,21 @@ function drawInitial(){
         .style("stroke", "yellow");
 }
 
-// function draw1(){
-//     let svg = d3.select("#vis")
-//     .select('svg')
-//     .attr('width', 800)
-//     .attr('height', 750)
-//     projection.fitSize([width/2,height/2],dataset);
-//     svg.selectAll("path")
-//         .data(dataset.features)
-//         .enter()
-//         .append("path")
-//         .attr("d", path)
-//         .transition()
-//         .style("fill", "black")
-//         .style("stroke", "yellow");
-// }
+function draw1(){
+    // let svg = d3.select("#vis")
+    // .select('svg')
+    // .attr('width', 800)
+    // .attr('height', 750)
+    // projection.fitSize([width/2,height/2],d);
+    // svg.selectAll("path")
+    //     .data(d.features)
+    //     .enter()
+    //     .append("path")
+    //     .attr("d", path)
+    //     .transition()
+    //     .style("fill", "black")
+    //     .style("stroke", "yellow");
+}
 
 // function draw2(){
 //     projection.fitSize([width/2,height/2],dataset);
@@ -85,8 +85,8 @@ function drawInitial(){
 
 // }
 
-let activationFunctions = [
-    drawInitial,
+let activationFunctions = [draw1
+    // drawInitial,
 ]
 
 // This specifies that scrolling occurs over the 'graphic' div that contains the text content on the left side.
