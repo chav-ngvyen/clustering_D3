@@ -33,14 +33,15 @@ const svg_width = svg_height*0.80
     //     ]
     
 
-
-    d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-        d3.json("GeoJSON/liquor.geojson").then(function(p){
-            dataset = d
-            points = p
-        console.log(dataset)
-        //grid()
-        })});
+    d3.json("GeoJSON/Washington_DC_Boundary.geojson").then(function(b){
+        d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
+            d3.json("GeoJSON/liquor.geojson").then(function(p){
+                boundary = b
+                dataset = d
+                points = p
+            console.log(dataset)
+            //grid()
+    })})});
     
     // function grid(){
     //     projection.fitSize([width/2,height/2],dataset);
@@ -72,11 +73,11 @@ const svg_width = svg_height*0.80
             .data(dataset.features)
             .enter()
             .append("path")
+            // .style("stroke", "black")            
             .attr("d", path)
-            .transition()
-                .duration(5000)
-            .style("fill", "black")
             .style("stroke", "black")
+            // .style("stroke", "black")            
+
     }
 
 
@@ -99,7 +100,7 @@ const svg_width = svg_height*0.80
                 //.delay(500)
             .attr("d", path)
             .style("fill", "black")
-            .style("stroke", "yellow")
+            .style("stroke", "gray")
     }
 
     let grid3 = () =>{
@@ -107,8 +108,8 @@ const svg_width = svg_height*0.80
             .transition()
                 .duration(2000)
             .attr("d", path)
-            .style("fill", "yellow")
-            .style("stroke", "yellow")
+            .style("fill", "darkgray")
+            .style("stroke", "gray")
     }
     // p1 = [-77.09543099,38.94611252];
     // p2 = [-77.04353969,38.92211949];
@@ -147,13 +148,13 @@ const svg_width = svg_height*0.80
             .data(points.features)
             .enter()
             .append("circle")
-            .attr("cx", function(d) { return projection([d.LONGITUDE,d.LATITUDE])[0] })
-            .attr("cy", function(d) { return projection([d.LONGITUDE,d.LATITUDE])[1] })
+            .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
+            .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
             .attr("r", 3)
-            .attr("stroke","black")
+            .attr("stroke","white")
             // .transition()
             // .delay(5000)
-            .attr("fill","black")
+            .attr("fill","transparent")
             }        
 // THIS WORKS
     // d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
@@ -369,7 +370,7 @@ const svg_width = svg_height*0.80
 
 
     //triger these functions on page scroll
-    new scroll('div1', '20%', grid, grid);
+    new scroll('div1', '75%', grid, grid);
     new scroll('div2', '75%', grid2, grid);
     new scroll('div3', '75%', grid3, grid2);
     new scroll('div6', '75%', draw_points, grid3)
