@@ -1,21 +1,26 @@
 let dataset, boundary
 
-const margin = {left: 0, top: 50, bottom: 50, right: 50}
-const width = 800 - margin.left - margin.right
-const height = 800 - margin.top - margin.bottom
+const margin = {left: 0, top: 0, bottom: 0, right: 0}
+const width = 1000 - margin.left - margin.right
+const height = 1000 - margin.top - margin.bottom
+
+const svg_height = height*0.75
+const svg_width = svg_height*0.80
+
 //svg
     let svg = d3.select("svg");
 
     //svg width and height
-    svg.attr('width',500)
-        .attr('height',500)
+    svg.attr('width',width*0.60)
+        .attr('height',svg_height)
+        // .style('background','red')
 
 
     //set up grid spacing
-    let spacing = 40;
-    let rows = 10;
-    let column = 10;
-    let randnum = (min,max) => Math.round( Math.random() * (max-min) + min );
+    //let spacing = 40;
+    //let rows = 10;
+    //let column = 10;
+    //let randnum = (min,max) => Math.round( Math.random() * (max-min) + min );
     
     let projection = d3.geoMercator();
     let path = d3.geoPath().projection(projection);
@@ -60,7 +65,7 @@ const height = 800 - margin.top - margin.bottom
     // }
     
     function grid(){
-        projection.fitSize([width/2,height/2],dataset);
+        projection.fitSize([svg_width, svg_height],dataset);
         svg.selectAll("path")
             .data(dataset.features)
             .enter()
@@ -117,11 +122,11 @@ const height = 800 - margin.top - margin.bottom
 		.append("circle")
 		.attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
 		.attr("cy", function (d) { return projection(d)[1]; })
-		.attr("r", "10px")
+		.attr("r", "5px")
         .attr("stroke","black")
-        .transition()
-        .delay(5000)
-		.attr("fill", "red")
+        // .transition()
+        // .delay(5000)
+		.attr("fill","transparent")
     }
 
 // THIS WORKS
