@@ -20,6 +20,15 @@ const height = 800 - margin.top - margin.bottom
     let projection = d3.geoMercator();
     let path = d3.geoPath().projection(projection);
 
+    // let points = [
+    //     {longitude:-77.09543099,latitude:38.94611252},
+    //     {longitude:-77.04353969,latitude:38.92211949},
+    //     {longitude:-77.03234479,latitude:38.89649258},
+    //     {longitude:-77.01515313,latitude:38.913635}
+    //     ]
+    
+
+
     d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         dataset = d
         console.log(dataset)
@@ -93,6 +102,26 @@ const height = 800 - margin.top - margin.bottom
             .attr("d", path)
             .style("fill", "yellow")
             .style("stroke", "yellow")
+    }
+    p1 = [-77.09543099,38.94611252];
+    p2 = [-77.04353969,38.92211949];
+    p3 = [-77.03234479,38.89649258];
+    p4 = [-77.01515313,38.913635];
+
+    console.log(projection[p1],projection[p2],projection[p3],projection[p4])
+
+    let circles = () =>{
+        svg.selectAll("circle")
+		.data([p1,p2,p3,p4])
+        .enter()
+		.append("circle")
+		.attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
+		.attr("cy", function (d) { return projection(d)[1]; })
+		.attr("r", "10px")
+        .attr("stroke","black")
+        .transition()
+        .delay(5000)
+		.attr("fill", "red")
     }
 
 // THIS WORKS
@@ -312,7 +341,7 @@ const height = 800 - margin.top - margin.bottom
     new scroll('div1', '20%', grid, grid);
     new scroll('div2', '75%', grid2, grid);
     new scroll('div3', '75%', grid3, grid2);
-    // new scroll('div6', '75%', barChart, divide);
+    new scroll('div6', '75%', circles, grid3);
 
 
 
