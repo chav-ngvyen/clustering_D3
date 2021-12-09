@@ -35,10 +35,12 @@ const svg_width = svg_height*0.80
 
 
     d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-        dataset = d
+        d3.json("GeoJSON/liquor.geojson").then(function(p){
+            dataset = d
+            points = p
         console.log(dataset)
         //grid()
-    });
+        })});
     
     // function grid(){
     //     projection.fitSize([width/2,height/2],dataset);
@@ -108,27 +110,51 @@ const svg_width = svg_height*0.80
             .style("fill", "yellow")
             .style("stroke", "yellow")
     }
-    p1 = [-77.09543099,38.94611252];
-    p2 = [-77.04353969,38.92211949];
-    p3 = [-77.03234479,38.89649258];
-    p4 = [-77.01515313,38.913635];
+    // p1 = [-77.09543099,38.94611252];
+    // p2 = [-77.04353969,38.92211949];
+    // p3 = [-77.03234479,38.89649258];
+    // p4 = [-77.01515313,38.913635];
 
-    console.log(projection[p1],projection[p2],projection[p3],projection[p4])
+    // console.log(projection[p1],projection[p2],projection[p3],projection[p4])
 
-    let circles = () =>{
+    // let circles = () =>{
+    //     svg.selectAll("circle")
+	// 	.data([p1,p2,p3,p4])
+    //     .enter()
+	// 	.append("circle")
+	// 	.attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
+	// 	.attr("cy", function (d) { return projection(d)[1]; })
+	// 	.attr("r", "5px")
+    //     .attr("stroke","black")
+    //     // .transition()
+    //     // .delay(5000)
+	// 	.attr("fill","transparent")
+    // }
+
+
+
+
+
+    
+    // d3.json("GeoJSON/liquor.geojson").then(function(d){
+    //     points = d
+    //     console.log(points)
+    //     });
+
+    function draw_points(){
+        // projection.fitSize([svg_width, svg_height],dataset);
         svg.selectAll("circle")
-		.data([p1,p2,p3,p4])
-        .enter()
-		.append("circle")
-		.attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
-		.attr("cy", function (d) { return projection(d)[1]; })
-		.attr("r", "5px")
-        .attr("stroke","black")
-        // .transition()
-        // .delay(5000)
-		.attr("fill","transparent")
-    }
-
+            .data(points.features)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) { return projection([d.LONGITUDE,d.LATITUDE])[0] })
+            .attr("cy", function(d) { return projection([d.LONGITUDE,d.LATITUDE])[1] })
+            .attr("r", 3)
+            .attr("stroke","black")
+            // .transition()
+            // .delay(5000)
+            .attr("fill","black")
+            }        
 // THIS WORKS
     // d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     //     dataset = d
@@ -346,7 +372,7 @@ const svg_width = svg_height*0.80
     new scroll('div1', '20%', grid, grid);
     new scroll('div2', '75%', grid2, grid);
     new scroll('div3', '75%', grid3, grid2);
-    new scroll('div6', '75%', circles, grid3);
+    new scroll('div6', '75%', draw_points, grid3)
 
 
 
