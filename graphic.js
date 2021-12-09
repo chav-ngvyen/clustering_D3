@@ -1,4 +1,4 @@
-let dataset, boundary
+let dataset, boundary, points
 
 const margin = {left: 0, top: 0, bottom: 0, right: 0}
 const width = 1000 - margin.left - margin.right
@@ -56,17 +56,18 @@ const svg_width = svg_height*0.80
     //     drawmap()
     // });
 
-    // function drawmap(){
-    //     projection.fitSize([width/2,height/2],boundary);
-    //     svg.selectAll("path")
-    //         .data(boundary.features)
-    //         .enter()
-    //         .append("path")
-    //         .attr("b", path)
-    //         .style("fill", "black")
-    //         .style("stroke", "black")
-    // }
-    
+    function draw_outline(){
+        projection.fitSize([svg_width, svg_height],boundary);
+        svg.selectAll("path")
+            .data(boundary.features)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .style("stroke", "black")
+            .style("fill", "transparent")            
+
+    }    
+// // THIS WORKS    
     function grid(){
         projection.fitSize([svg_width, svg_height],dataset);
         svg.selectAll("path")
@@ -75,11 +76,37 @@ const svg_width = svg_height*0.80
             .append("path")
             // .style("stroke", "black")            
             .attr("d", path)
-            .style("stroke", "black")
-            // .style("stroke", "black")            
+            .style("stroke", "red")
+            .style("fill", "orange")            
 
     }
 
+    // let grid = () =>{
+    //     // projection.fitSize([svg_width, svg_height],dataset);
+    //    data(dataset.features)
+    //         .enter()
+    //         svg.append("path")
+    //         // .transition()
+    //         // .duration(2000)
+    //         // .style("stroke", "black")            
+    //         .attr("d", path)
+    //         .style("stroke", "black")
+    //         .style("fill", "orange")            
+
+    // }    
+
+    // let grid = () =>{
+    //     projection.fitSize([svg_width, svg_height],dataset);
+    //     svg.selectAll("path")
+    //         .data(dataset.features)
+    //         .enter()
+    //         .append("path")
+    //         // .style("stroke", "black")            
+    //         .attr("d", path)
+    //         .style("stroke", "black")
+    //         .style("fill", "orange")            
+
+    // }
 
     // let grid = () =>{
     //     projection.fitSize([width/2,height/2],dataset);
@@ -152,8 +179,8 @@ const svg_width = svg_height*0.80
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
             .attr("r", 3)
             .attr("stroke","white")
-            // .transition()
-            // .delay(5000)
+            .transition()
+            .duration(5000)
             .attr("fill","transparent")
             }        
 // THIS WORKS
@@ -370,7 +397,8 @@ const svg_width = svg_height*0.80
 
 
     //triger these functions on page scroll
-    new scroll('div1', '75%', grid, grid);
+    // new scroll('div0', '75%', draw_outline, draw_outline);
+    new scroll('div1', '75%', draw_outline, grid);
     new scroll('div2', '75%', grid2, grid);
     new scroll('div3', '75%', grid3, grid2);
     new scroll('div6', '75%', draw_points, grid3)
@@ -378,4 +406,4 @@ const svg_width = svg_height*0.80
 
 
     //start grid on page load
-    //drawmap()
+    // draw_outline()
