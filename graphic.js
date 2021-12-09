@@ -1,4 +1,4 @@
-let dataset
+let dataset, boundary
 
 const margin = {left: 0, top: 50, bottom: 50, right: 50}
 const width = 800 - margin.left - margin.right
@@ -23,8 +23,32 @@ const height = 800 - margin.top - margin.bottom
     d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         dataset = d
         console.log(dataset)
-        grid()
+        //grid()
     });
+    
+    // function grid(){
+    //     projection.fitSize([width/2,height/2],dataset);
+    //     svg.selectAll("path")
+    //         .data(dataset.features)
+    //         .enter()
+    //         .style("fill","navy")
+    // }
+    // d3.json("GeoJSON/Washington_DC_Boundary.geojson").then(function(b){
+    //     boundary = b
+    //     console.log(boundary)
+    //     drawmap()
+    // });
+
+    // function drawmap(){
+    //     projection.fitSize([width/2,height/2],boundary);
+    //     svg.selectAll("path")
+    //         .data(boundary.features)
+    //         .enter()
+    //         .append("path")
+    //         .attr("b", path)
+    //         .style("fill", "black")
+    //         .style("stroke", "black")
+    // }
     
     function grid(){
         projection.fitSize([width/2,height/2],dataset);
@@ -33,22 +57,41 @@ const height = 800 - margin.top - margin.bottom
             .enter()
             .append("path")
             .attr("d", path)
-            .style("fill", "navy")
+            .transition()
+                .duration(5000)
+            .style("fill", "black")
+            .style("stroke", "black")
+    }
+
+
+    // let grid = () =>{
+    //     projection.fitSize([width/2,height/2],dataset);
+    //     svg.selectAll("path")
+    //         .data(dataset.features)
+    //         .enter()
+    //         .append("path")
+    //         .attr("d", path)
+    //         .style("fill", "black")
+    //         .style("stroke", "black")
+    // }
+
+
+    let grid2 = () =>{
+        svg.selectAll("path")
+            .transition()
+                .duration(2000)
+                //.delay(500)
+            .attr("d", path)
+            .style("fill", "black")
             .style("stroke", "yellow")
     }
 
-    let grid2 = () =>{
-        projection.fitSize([width/2,height/2],dataset);
+    let grid3 = () =>{
         svg.selectAll("path")
-            // .data(dataset.features)
-            // .enter()
-            // .append("path")
-            // .attr("d", path)
             .transition()
-                .duration(500)
-                .delay(1000)
+                .duration(2000)
             .attr("d", path)
-            .style("fill", "red")
+            .style("fill", "yellow")
             .style("stroke", "yellow")
     }
 
@@ -265,12 +308,13 @@ const height = 800 - margin.top - margin.bottom
     };
 
 
-
     //triger these functions on page scroll
+    new scroll('div1', '20%', grid, grid);
     new scroll('div2', '75%', grid2, grid);
-    // new scroll('div4', '75%', divide, grid);
+    new scroll('div3', '75%', grid3, grid2);
     // new scroll('div6', '75%', barChart, divide);
 
 
 
     //start grid on page load
+    //drawmap()
