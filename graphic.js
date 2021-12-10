@@ -35,13 +35,13 @@ const svg_width = svg_height*0.80
         let svg = d3.select('svg')
     }    
 
-    d3.json("GeoJSON/Washington_DC_Boundary.geojson").then(function(b){
-        d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-            d3.json("GeoJSON/liquor.geojson").then(function(p){
-                boundary = b
-                dataset = d
-                points = p
-            console.log(dataset)
+    d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
+        d3.json("GeoJSON/liquor.geojson").then(function(p){
+            d3.json("GeoJSON/labeled.geojson").then(function(l){
+            dataset = d
+            points = p
+            labels = l
+        console.log(dataset)
             //grid()
     })})});
     
@@ -179,30 +179,79 @@ const svg_width = svg_height*0.80
     function draw_points(){
         projection.fitSize([svg_width, svg_height],dataset);
         svg.selectAll("circle")
-            .data(points.features)
+            .data(labels.features)
             .enter()
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
-            .attr("r", 5)
+            .attr("r", 3)
             .attr("stroke","black")
+            .attr("stroke-width",0.5)
             .attr("fill","transparent")
             .transition()
             .duration(5000)
     } 
 
-    var color  = d3.scaleOrdinal().domain([0,1]).range(d3.schemeSet3);
+    var color  = d3.scaleOrdinal().domain([-1,19]).range(d3.schemeTableau10);
  
-    function color_points(){
+    function color_points1(){
         svg.selectAll("circle")
         .transition()
         .duration(2000)
         //.delay(500)
-        .attr("d", path)
-        .style("fill", function(d, i) {
-            return color(i);
+        // .attr("", path)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            return color(d.properties.labels[1]);
          })
     }
+
+    var color  = d3.scaleOrdinal().domain([-1,55]).range(d3.schemeTableau10);
+ 
+    function color_points2(){
+        svg.selectAll("circle")
+        .transition()
+        .duration(2000)
+        //.delay(500)
+        // .attr("", path)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            return color(d.properties.labels[2]);
+         })
+    }
+
+    var color  = d3.scaleOrdinal().domain([-1,48]).range(d3.schemeTableau10);
+ 
+    function color_points3(){
+        svg.selectAll("circle")
+        .transition()
+        .duration(2000)
+        //.delay(500)
+        // .attr("", path)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            return color(d.properties.labels[3]);
+         })
+    }
+    var color  = d3.scaleOrdinal().domain([-1,143]).range(d3.schemeTableau10);
+ 
+    function color_points4(){
+        svg.selectAll("circle")
+        .transition()
+        .duration(2000)
+        //.delay(500)
+        // .attr("", path)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            return color(d.properties.labels[4]);
+         })
+    }
+
+    // .style("fill", function (d) { return color(d.Species) } )
 // THIS WORKS
     // d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     //     dataset = d
@@ -424,10 +473,16 @@ const svg_width = svg_height*0.80
     // new scroll('div6', '75%', draw_points, grid3)
 
     
-    new scroll('showpoints',"5%", draw_points, clean);
-    new scroll('colorpoints1', "75%", color_points, draw_points);
-    new scroll('div1', '75%', grid, grid);
-    new scroll('div2', '75%', draw_points, grid);
+    new scroll('drawpoints',"50%", draw_points, clean);
+    new scroll('colorpoints1', "75%", color_points1, draw_points);
+    new scroll('colorpoints2', "75%", color_points2, color_points1);
+    new scroll('colorpoints3', "75%", color_points3, color_points2);
+    new scroll('colorpoints4', "75%", color_points4, color_points3);
+
+
+
+    // new scroll('div1', '75%', grid, grid);
+    // new scroll('div2', '75%', draw_points, grid);
     // new scroll('div3', '75%', grid3, grid2);
     // new scroll('div6', '75%', draw_points, grid3)
 
