@@ -9,21 +9,29 @@ body{
  height: 100%;
  padding: 0;
  scroll-behavior: smooth;
- background: #f7f5f2;
- color: #666;
+ background: #e0e0e0;
+ color: black;
  font-family: 'Open Sans', sans-serif;
  font-weight: 300;
 }
+
+
 h2{
 line-height: 1.25;
 padding-top: 45px;
 font-weight: 300;
+font-size: 2em
 }
+
+
 svg{
 padding: 0px;
 }
 text{
-font-size: 10px;
+font-size: 20px;
+}
+p{
+font-size: 1.5em;
 }
 strong{
 font-weight: 600;
@@ -37,9 +45,10 @@ position:  relative;
 margin:auto;
 }
 .container {
+
 height: 100%;
-/* max-width: 440px; */
-width: 100%;
+max-width: 50%;
+width: 50%;
 margin: 0;
 padding: 0;
 position: absolute;
@@ -52,10 +61,16 @@ height: 100%;
 display: block;
 padding: 0 110px;
 }
+
 .fixed {
 position: fixed;
 max-width: 500px;
 height: 500px;
 top: 50px;
 }
-</style>
+
+
+
+
+
+ </style>

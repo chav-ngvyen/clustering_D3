@@ -1,6 +1,6 @@
 let dataset, boundary, points
 
-const margin = {left: 0, top: 0, bottom: 0, right: 0}
+const margin = {left: 0, top: 100, bottom: 0, right: 0}
 const width = 1000 - margin.left - margin.right
 const height = 1000 - margin.top - margin.bottom
 
@@ -31,7 +31,9 @@ const svg_width = svg_height*0.80
     //     {longitude:-77.03234479,latitude:38.89649258},
     //     {longitude:-77.01515313,latitude:38.913635}
     //     ]
-    
+    function clean(){
+        let svg = d3.select('svg')
+    }    
 
     d3.json("GeoJSON/Washington_DC_Boundary.geojson").then(function(b){
         d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
@@ -43,6 +45,13 @@ const svg_width = svg_height*0.80
             //grid()
     })})});
     
+
+    //Cleaning Function
+    //Will hide all the elements which are not necessary for a given chart type 
+
+
+
+
     // function grid(){
     //     projection.fitSize([width/2,height/2],dataset);
     //     svg.selectAll("path")
@@ -56,17 +65,16 @@ const svg_width = svg_height*0.80
     //     drawmap()
     // });
 
-    function draw_outline(){
-        projection.fitSize([svg_width, svg_height],boundary);
-        svg.selectAll("path")
-            .data(boundary.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .style("stroke", "black")
-            .style("fill", "transparent")            
-
-    }    
+    // function draw_outline(){
+    //     projection.fitSize([svg_width, svg_height],boundary);
+    //     svg.selectAll("path")
+    //         .data(boundary.features)
+    //         .enter()
+    //         .append("path")
+    //         .attr("d", path)
+    //         .style("stroke", "black")
+    //         .style("fill", "transparent")            
+    // }    
 // // THIS WORKS    
     function grid(){
         projection.fitSize([svg_width, svg_height],dataset);
@@ -76,9 +84,8 @@ const svg_width = svg_height*0.80
             .append("path")
             // .style("stroke", "black")            
             .attr("d", path)
-            .style("stroke", "red")
-            .style("fill", "orange")            
-
+            .style("stroke", "black")
+            .style("fill", "black")            
     }
 
     // let grid = () =>{
@@ -170,19 +177,19 @@ const svg_width = svg_height*0.80
     //     });
 
     function draw_points(){
-        // projection.fitSize([svg_width, svg_height],dataset);
+        projection.fitSize([svg_width, svg_height],dataset);
         svg.selectAll("circle")
             .data(points.features)
             .enter()
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
-            .attr("r", 3)
-            .attr("stroke","white")
-            .transition()
-            .duration(5000)
+            .attr("r", 5)
+            .attr("stroke","black")
             .attr("fill","transparent")
-            }        
+            // .transition()
+            // .duration(5000)
+    }       
 // THIS WORKS
     // d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     //     dataset = d
@@ -398,12 +405,45 @@ const svg_width = svg_height*0.80
 
     //triger these functions on page scroll
     // new scroll('div0', '75%', draw_outline, draw_outline);
-    new scroll('div1', '75%', draw_outline, grid);
-    new scroll('div2', '75%', grid2, grid);
-    new scroll('div3', '75%', grid3, grid2);
-    new scroll('div6', '75%', draw_points, grid3)
+    // new scroll('div1', '75%', grid, grid);
+    // new scroll('div2', '75%', grid2, grid);
+    // new scroll('div3', '75%', grid3, grid2);
+    // new scroll('div6', '75%', draw_points, grid3)
 
+    
+    new scroll('showpoints',"75%", draw_points, clean);
+    new scroll('div1', '75%', grid, grid);
+    new scroll('div2', '75%', draw_points, grid);
+    // new scroll('div3', '75%', grid3, grid2);
+    // new scroll('div6', '75%', draw_points, grid3)
 
 
     //start grid on page load
     // draw_outline()
+
+    // var headerPoint = $(".project");
+
+    // headerPoint.waypoint({
+    //   handler: function(direction) {
+    //     if (direction === 'down') {
+    //       var title = this.element.getAttribute("data-title");
+    //       $("#header").text(title);
+    //     }
+    //   },
+    //   offset: '50%'
+    // });
+    
+    // headerPoint.waypoint({
+    //   handler: function(direction) {
+    //     if (direction === 'up') {
+    //       var title = this.element.getAttribute("data-title");
+    //       $("#header").text(title);
+    
+    //       //console.log($(window).height());
+    //       //console.log(this.element.clientHeight);
+    //     }
+    //   },
+    //   offset: function() {
+    //     return -this.element.clientHeight + ($(window).height()/2);
+    //   }
+    // });

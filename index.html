@@ -2,44 +2,68 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- call to style.css for additional formatting -->
-    <link rel = "stylesheet" href="style.css">
-    
-    <!-- call to D3.js to use framework 
-    <script src = 'https://d3js.org/d3.v7.min.js'></script>
-    -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
-    
     <!-- meta data -->
     <meta property = 'og:title' content='PPOL 563: Final Project'/>
     <meta property = 'og:description' content='Demonstrating clustering algorithms with scrollyboard'/>
     <meta property = 'og:url' content='https://github.com/chav-ngvyen/clustering_d3/'/> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- call to style.css for additional formatting -->
+    <link rel = "stylesheet" href="style.css">
+    
+    <!-- call to D3.js to use framework -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- JQuery and Waypoint -->
+    <script src='http://code.jquery.com/jquery-latest.min.js'/></script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js'/></script>
+    
+    <!-- Waypoints for scrolling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
+
     <!-- Ignore Favicon error on Firefox-->
     <link rel="icon" href="data:;base64,=">
-    <!-- title -->
-    <title>Clustering</title>
+    
+    <!-- title to appear in browser-->
+    <title>Scrolly clusters</title>
 </head>
 
 <body>
+
     <div id="graphic">
+
         <div class="container">
+
+
           <div>
-            <h2><strong>Hello</strong></h2>
+            <h2><strong>Hello and welcome!</strong></h2>
+            <p> Thank you for clicking on my scrollyboard. </p>
+          </div>
+
+          <div id="showpoints">
+            <h2>I will demonstrate what <strong>clustering</strong> is
+            and how it <strong>works</strong>.</h2>
+          </div>    
+
+
+          <div>
+            <h2>Imagine we have a set of <strong> 2130 points</strong></h2>
             <p>
-              Welcome to my scrollyboard.
+              We don't know <strong>what</strong> they are. <br>
+              We would like to put them into <strong>groups</strong><br>
+              So we can <strong> further study </strong> them.
             </p>
           </div>
 
           <div>
-            <h2><strong>What is clustering</strong></h2>
+            <h2>Because the points are <strong> unlabeled</strong></h2>
             <p>
-              Explain clustering.
+              We don't know <strong>what</strong> they are. <br>
+              We would like to put them into <strong>groups</strong><br>
+              So we can <strong> further study <strong> them.
             </p>
-
           </div>
 
           <div id="div1">
@@ -68,16 +92,15 @@
             <p>
               In step four, I draw the points I want to cluster.
             </p> 
-
           </div>
           
-        </div>
+        </div> <!-- End container -->
       
       
         <!-- svg -->
         <div class="fixed"><svg id="viz" width="100%" height="100%"></svg></div>
       
-      </div><!-- /graphic -->
+      </div> <!-- End graphic -->
 
     <!-- 
     <script src = 'scroller.js'></script>
@@ -91,4 +114,5 @@
 
 <!-- References
 https://bl.ocks.org/baronwatts/raw/2a50ae537d7c46670aa5eb30254ef751/?raw=true
+https://stackoverflow.com/questions/50329010/waypoints-on-multiple-elements-updating-header
 -->
