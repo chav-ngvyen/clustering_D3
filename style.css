@@ -9,7 +9,7 @@ body{
  height: 100%;
  padding: 0;
  scroll-behavior: smooth;
- background: #e0e0e0;
+ background: #78a9ff;
  color: black;
  font-family: 'Open Sans', sans-serif;
  font-weight: 300;
@@ -59,16 +59,14 @@ margin:auto;
 .container div {  
   height: 100%;
   display: block;
-  padding: 0 0px;
-  background-color: red;
+  padding: 10 0px;
 }
 
 .fixed {
   position: fixed;
-  width:60%;
-  top:10%;
-  height:80%;
-  background-color: blue;
+  width:55%;
+  top:5%;
+  height:90%;
   left:0;
 }
 

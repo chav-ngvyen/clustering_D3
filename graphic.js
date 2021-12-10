@@ -1,20 +1,21 @@
 let dataset, boundary, points
 
 const margin = {left: 0, top: 100, bottom: 0, right: 0}
-const width = 1000 - margin.left - margin.right
-const height = 1000 - margin.top - margin.bottom
+// const width = 1000 - margin.left - margin.right
+// const height = 1000 - margin.top - margin.bottom
 
-const svg_height = height*0.75
-const svg_width = svg_height*0.80
+const height =  window.innerHeight
+const width = window.innerWidth
+
+const svg_height = height*0.9
+const svg_width = svg_height*0.8
 
 //svg
     let svg = d3.select("svg");
 
     //svg width and height
-    svg.attr('width',width*0.60)
+    svg.attr('width',svg_width)
         .attr('height',svg_height)
-        // .style('background','red')
-
 
     //set up grid spacing
     //let spacing = 40;
@@ -30,10 +31,7 @@ const svg_width = svg_height*0.80
     //     {longitude:-77.04353969,latitude:38.92211949},
     //     {longitude:-77.03234479,latitude:38.89649258},
     //     {longitude:-77.01515313,latitude:38.913635}
-    //     ]
-    function clean(){
-        let svg = d3.select('svg')
-    }    
+    //     ]   
 
     d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         d3.json("GeoJSON/liquor.geojson").then(function(p){
@@ -44,7 +42,9 @@ const svg_width = svg_height*0.80
         console.log(dataset)
             //grid()
     })})});
-    
+    function clean(){
+        let svg = d3.select('svg')
+    }     
 
     //Cleaning Function
     //Will hide all the elements which are not necessary for a given chart type 
@@ -184,7 +184,7 @@ const svg_width = svg_height*0.80
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
-            .attr("r", 3)
+            .attr("r", 4)
             .attr("stroke","black")
             .attr("stroke-width",0.5)
             .attr("fill","transparent")
@@ -197,7 +197,7 @@ const svg_width = svg_height*0.80
     function color_points1(){
         svg.selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(1000)
         //.delay(500)
         // .attr("", path)
         .attr("stroke","black")
@@ -212,7 +212,7 @@ const svg_width = svg_height*0.80
     function color_points2(){
         svg.selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(1000)
         //.delay(500)
         // .attr("", path)
         .attr("stroke","black")
@@ -227,7 +227,7 @@ const svg_width = svg_height*0.80
     function color_points3(){
         svg.selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(1000)
         //.delay(500)
         // .attr("", path)
         .attr("stroke","black")
@@ -472,13 +472,12 @@ const svg_width = svg_height*0.80
     // new scroll('div3', '75%', grid3, grid2);
     // new scroll('div6', '75%', draw_points, grid3)
 
-    
-    new scroll('drawpoints',"50%", draw_points, clean);
-    new scroll('colorpoints1', "75%", color_points1, draw_points);
-    new scroll('colorpoints2', "75%", color_points2, color_points1);
-    new scroll('colorpoints3', "75%", color_points3, color_points2);
-    new scroll('colorpoints4', "75%", color_points4, color_points3);
 
+    new scroll('drawpoints',"50%", draw_points, clean);
+    new scroll('colorpoints1', "50%", color_points1, draw_points);
+    new scroll('colorpoints2', "50%", color_points2, color_points1);
+    new scroll('colorpoints3', "50%", color_points3, color_points2);
+    new scroll('colorpoints4', "50%", color_points4, color_points3);
 
 
     // new scroll('div1', '75%', grid, grid);
