@@ -44,29 +44,32 @@ height:  100%;
 position:  relative; 
 margin:auto;
 }
+  
 .container {
-
-height: 100%;
-max-width: 50%;
-width: 50%;
-margin: 0;
-padding: 0;
-position: absolute;
-height: 100%;
-line-height: 1.5;
-left: 500px;
+  height: 100%;
+  /* max-width: 50%; */
+  width: 40%;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  height: 100%;
+  line-height: 1.5;
+  right:0;
 }
-.container div {
-height: 100%;
-display: block;
-padding: 0 110px;
+.container div {  
+  height: 100%;
+  display: block;
+  padding: 0 0px;
+  background-color: red;
 }
 
 .fixed {
-position: fixed;
-max-width: 500px;
-height: 500px;
-top: 50px;
+  position: fixed;
+  width:60%;
+  top:10%;
+  height:80%;
+  background-color: blue;
+  left:0;
 }
 
 
