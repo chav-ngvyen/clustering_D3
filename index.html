@@ -9,6 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- title to appear in browser-->
+    <title>Scrolly clusters</title>
+    
     <!-- call to style.css for additional formatting -->
     <link rel = "stylesheet" href="style.css">
     
@@ -16,18 +19,16 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <!-- JQuery and Waypoint -->
-    <script src='http://code.jquery.com/jquery-latest.min.js'/></script>
-
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js'/></script>
+    <!-- <script src='http://code.jquery.com/jquery-latest.min.js'/></script> -->
+    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js'/></script> -->
     
     <!-- Waypoints for scrolling -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
-
-    <!-- Ignore Favicon error on Firefox-->
+    <!-- Color pallete  -->
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <!-- Ignore missing Favicon error on Firefox-->
     <link rel="icon" href="data:;base64,=">
     
-    <!-- title to appear in browser-->
-    <title>Scrolly clusters</title>
 </head>
 
 <body>
@@ -60,9 +61,15 @@
           <div>
             <h2>Because the points are <strong> unlabeled</strong></h2>
             <p>
-              We don't know <strong>what</strong> they are. <br>
-              We would like to put them into <strong>groups</strong><br>
-              So we can <strong> further study <strong> them.
+              We need to a way to determine which group each point belongs to. <br>
+              This is where <strong> clusters analysis </strong> comes into play.
+            </p>
+          </div>
+
+          <div id = "colorpoints1">
+            <h2>This is a test</h2>
+            <p>
+              Color the points!
             </p>
           </div>
 
