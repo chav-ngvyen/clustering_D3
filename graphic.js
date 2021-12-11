@@ -8,7 +8,7 @@ const height =  window.innerHeight
 const width = window.innerWidth
 
 const svg_height = height
-const svg_width = svg_height*0.8
+const svg_width = svg_height*0.85
 
 //svg
     let svg = d3.select("svg");
@@ -76,17 +76,17 @@ const svg_width = svg_height*0.8
     //         .style("fill", "transparent")            
     // }    
 // // THIS WORKS    
-    function grid(){
-        projection.fitSize([svg_width, svg_height],dataset);
-        svg.selectAll("path")
-            .data(dataset.features)
-            .enter()
-            .append("path")
-            // .style("stroke", "black")            
-            .attr("d", path)
-            .style("stroke", "black")
-            .style("fill", "black")            
-    }
+    // function grid(){
+    //     projection.fitSize([svg_width, svg_height],dataset);
+    //     svg.selectAll("path")
+    //         // .data(dataset.features)
+    //         // .enter()
+    //         .append("path")
+    //         // .style("stroke", "black")            
+    //         .attr("d", path)
+    //         .style("stroke", "black")
+    //         .style("fill", "black")            
+    // }
 
     // let grid = () =>{
     //     // projection.fitSize([svg_width, svg_height],dataset);
@@ -184,10 +184,10 @@ const svg_width = svg_height*0.8
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
-            .attr("r", 4)
-            .attr("stroke","black")
+            .attr("r", 3.5)
+            .attr("stroke","white")
             .attr("stroke-width",0.5)
-            .attr("fill","transparent")
+            .attr("fill","white")
             .transition()
             .duration(5000)
     } 
@@ -287,6 +287,25 @@ const svg_width = svg_height*0.8
                 return "white";
             }
          })
+    }
+    d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
+        dataset = d;
+        console.log(dataset);
+    })
+
+    function grid(){
+        projection.fitSize([svg_width, svg_height],dataset);
+        svg.selectAll("path")
+            .data(dataset.features)
+            .enter()
+            .append("path")
+            // .style("stroke", "black")            
+            .attr("d", path)
+            .style("stroke", "black")
+            .style("fill", "transparent") 
+            .transition()
+            .duration(2000)  
+
     }
 
     // .style("fill", function (d) { return color(d.Species) } )
@@ -512,10 +531,13 @@ const svg_width = svg_height*0.8
 
 
     new scroll('drawpoints',"50%", draw_points, clean);
+    new scroll('drawmap', "50%", grid, color_points4);
+
     new scroll('colorpoints1', "50%", color_points1, draw_points);
     new scroll('colorpoints2', "50%", color_points2, color_points1);
     new scroll('colorpoints3', "50%", color_points3, color_points2);
     new scroll('colorpoints4', "50%", color_points4, color_points3);
+
 
 
     // new scroll('div1', '75%', grid, grid);
