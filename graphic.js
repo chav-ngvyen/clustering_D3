@@ -7,7 +7,7 @@ const margin = {left: 0, top: 100, bottom: 0, right: 0}
 const height =  window.innerHeight
 const width = window.innerWidth
 
-const svg_height = height*0.9
+const svg_height = height
 const svg_width = svg_height*0.8
 
 //svg
@@ -192,7 +192,7 @@ const svg_width = svg_height*0.8
             .duration(5000)
     } 
 
-    var color  = d3.scaleOrdinal().domain([-1,19]).range(d3.schemeTableau10);
+    var color  = d3.scaleOrdinal().domain([0,19]).range(d3.schemeSet2);
  
     function color_points1(){
         svg.selectAll("circle")
@@ -203,11 +203,21 @@ const svg_width = svg_height*0.8
         .attr("stroke","black")
         .attr("stroke-width",0.5)
         .style("fill", function(d) {
-            return color(d.properties.labels[1]);
+            if (d.properties.labels[1] !=-1) {
+                return color(d.properties.labels[1]);
+            } else {
+                return "transparent"
+            }
+         })
+        .style("stroke", function(d) {
+            if (d.properties.labels[1] ==-1) {
+                return "white";
+            }
          })
     }
+    
 
-    var color  = d3.scaleOrdinal().domain([-1,55]).range(d3.schemeTableau10);
+    var color  = d3.scaleOrdinal().domain([0,55]).range(d3.schemeSet2);
  
     function color_points2(){
         svg.selectAll("circle")
@@ -218,11 +228,20 @@ const svg_width = svg_height*0.8
         .attr("stroke","black")
         .attr("stroke-width",0.5)
         .style("fill", function(d) {
-            return color(d.properties.labels[2]);
+            if (d.properties.labels[2] !=-1) {
+                return color(d.properties.labels[2]);
+            } else {
+                return "transparent"
+            }
+         })
+         .style("stroke", function(d) {
+            if (d.properties.labels[2] ==-1) {
+                return "white";
+            }
          })
     }
 
-    var color  = d3.scaleOrdinal().domain([-1,48]).range(d3.schemeTableau10);
+    var color  = d3.scaleOrdinal().domain([0,48]).range(d3.schemeSet2);
  
     function color_points3(){
         svg.selectAll("circle")
@@ -233,10 +252,20 @@ const svg_width = svg_height*0.8
         .attr("stroke","black")
         .attr("stroke-width",0.5)
         .style("fill", function(d) {
-            return color(d.properties.labels[3]);
+            if (d.properties.labels[3] !=-1) {
+                return color(d.properties.labels[3]);
+            } else {
+                return "transparent"
+            }
+         })
+         .style("stroke", function(d) {
+            if (d.properties.labels[3] ==-1) {
+                return "white";
+            }
          })
     }
-    var color  = d3.scaleOrdinal().domain([-1,143]).range(d3.schemeTableau10);
+
+    var color  = d3.scaleOrdinal().domain([0,143]).range(d3.schemePaired);
  
     function color_points4(){
         svg.selectAll("circle")
@@ -247,7 +276,16 @@ const svg_width = svg_height*0.8
         .attr("stroke","black")
         .attr("stroke-width",0.5)
         .style("fill", function(d) {
-            return color(d.properties.labels[4]);
+            if (d.properties.labels[4] !=-1) {
+                return color(d.properties.labels[4]);
+            } else {
+                return "transparent"
+            }
+         })
+         .style("stroke", function(d) {
+            if (d.properties.labels[4] ==-1) {
+                return "white";
+            }
          })
     }
 
