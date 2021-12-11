@@ -9,7 +9,7 @@ body{
  height: 100%;
  padding: 0;
  scroll-behavior: smooth;
- background: #78a9ff;
+ background: #c1c7cd;
  color: black;
  font-family: 'Open Sans', sans-serif;
  font-weight: 300;
@@ -65,7 +65,7 @@ margin:auto;
 .fixed {
   position: fixed;
   width:55%;
-  top:5%;
+  top:1%;
   height:90%;
   left:0;
 }
