@@ -33,6 +33,13 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     console.log(dataset);
     console.log(labels);
 
+    c30 = [ "#5A5156", "#E4E1E3", "#F6222E", "#FE00FA", "#16FF32", "#3B00FB",
+    "#3283FE", "#FEAF16", "#B00068", "#1CFFCE", "#90AD1C", "#2ED9FF",
+    "#DEA0FD", "#AA0DFE", "#F8A19F", "#325A9B", "#C4451C", "#1C8356",
+    "#85660D", "#B10DA1", "#FBE426", "#1CBE4F", "#FA0087", "#FC1CBF",
+    "#F7E1A0", "#C075A6", "#782AB6", "#AAF400", "#BDCDFF", "#822E1C",
+    "#B5EFB5", "#7ED7D1", "#1C7F93", "#D85FF7", "#683B79", "#66B0FF"] 
+
     // Function to draw points 
     function draw_points(){
         projection.fitSize([svg_width, svg_height],dataset);
@@ -45,12 +52,44 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .attr("r", 3.5)
             .attr("stroke","white")
             .attr("stroke-width",0.5)
-            .attr("fill","white")
+            .attr("fill","transparent")
             .transition()
             .duration(5000)
         };
+     
+    // Function to update the color range depending on how many labels (clusters) we got
+    function get_color_domain(index){
+        let color =  d3.scaleOrdinal().domain([0
+            ,color_domain_max[index]])
+            .range(c30);
+        return color
+    };
+    // console.log("update color", get_color_domain(1));
 
-        // Waypoints scroll constructor
+
+    function color_points(index){
+        color = get_color_domain(index);
+        console.log("color", color_domain_max[index]);
+        svg.selectAll("circle")
+        .transition()
+        .duration(1000)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            if (d.properties.labels[index] !=-1) {
+                return color(d.properties.labels[index]);
+            } else {
+                return "transparent"
+            }
+         })
+        .style("stroke", function(d) {
+            if (d.properties.labels[index] ==-1) {
+                return "white";
+            }
+         })
+    };
+
+    // Waypoints scroll constructor
     function scroll(n, offset, func1, func2){
         return new Waypoint({
         element: document.getElementById(n),
@@ -62,9 +101,30 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         offset: offset
         });
     };
+    function color_points0(){
+        color_points(0)
+    };
+
+    function color_points1(){
+        color_points(1)
+    };
+
+    function color_points2(){
+        color_points(2)
+    };
+
+    function color_points3(){
+        color_points(3)
+    };
+
+
+
 
 new scroll('welcome',"50%", draw_points, clean_points);
-// new scroll('test',"50%", update_color, draw_points);
+new scroll('test',"50%", color_points0, draw_points);
+new scroll('test1',"50%", color_points1, color_points0);
+new scroll('test2',"50%", color_points2, color_points1);
+new scroll('test3',"50%", color_points3, color_points2);
 
 
 })});
