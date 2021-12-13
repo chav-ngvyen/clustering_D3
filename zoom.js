@@ -18,10 +18,12 @@ const svg_width = svg_height*0.85
 let projection = d3.geoMercator();
 let path = d3.geoPath().projection(projection);
 
+d3.json("GeoJSON/labeled.geojson").then(function(l){
 d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
   d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(geo){
   dc = geo;
   topo = json;
+  labels = l;
 
   console.log("geojson file", dc);
   console.log("topojson file", dc);
@@ -47,7 +49,22 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
   .scaleExtent([1, 8])
   .on("zoom", zoomed);
 
-
+  function draw_points(){
+    projection.fitSize([svg_width, svg_height],dc);
+    g.selectAll("circle")
+        .data(labels.features)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
+        .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
+        .attr("r", 4)
+        .attr("stroke","white")
+        .attr("stroke-width",0.5)
+        .attr("fill","transparent")
+        .transition()
+        .duration(5000)
+    };
+  
   projection.fitSize([svg_width, svg_height],dc);
   const clusters = g.append("g")
   .attr("fill", "#444")
@@ -56,14 +73,15 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
     .data(dc.features)
     .join("path")
     .on("click", clicked)
-    .attr("d", path);
+    .attr("d", path).lower();
 
     g.append("path")
       .attr("fill", "none")
       .attr("stroke", "white")
       .attr("stroke-linejoin", "round")
-      .attr("d", path);
+      .attr("d", path).lower();
 
+      draw_points();
 
   // center = path.centroid(dupont);
   // console.log(center);
@@ -115,7 +133,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
       zoom.transform,
       d3.zoomIdentity
         .translate(svg_width / 2, svg_height / 2)
-        .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / svg_width, (y1 - y0) / svg_height)))
+        .scale(Math.min(5, 0.5 / Math.max((x1 - x0) / svg_width, (y1 - y0) / svg_height)))
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
       d3.pointer(event, svg.node())
     );
@@ -128,4 +146,4 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
     g.attr("stroke-width", 1 / transform.k);
   }
 
-})});
+})})});
