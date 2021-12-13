@@ -54,7 +54,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
     g.selectAll("circle")
         .data(labels.features)
         .enter()
-        .append("circle")
+        .append("circle").raise()
         .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
         .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
         .attr("r", 4)
@@ -65,6 +65,22 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
         .duration(5000)
     };
   
+    //  Function to draw DC map   
+  function draw_map(){
+      svg.selectAll("path")
+          .data(dataset.features)
+          .enter()
+          .append("path")
+          .attr("d", path).lower()
+          .style("stroke", "white")
+          .style("fill", "transparent") 
+          .transition()
+          .duration(3000)  
+  };
+
+  function allow_zoom(){
+
+
   projection.fitSize([svg_width, svg_height],dc);
   const clusters = g.append("g")
   .attr("fill", "#444")
@@ -81,7 +97,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
       .attr("stroke-linejoin", "round")
       .attr("d", path).lower();
 
-      draw_points();
 
   // center = path.centroid(dupont);
   // console.log(center);
@@ -145,5 +160,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
     g.attr("transform", transform);
     g.attr("stroke-width", 1 / transform.k);
   }
+}
 
 })})});
