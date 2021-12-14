@@ -49,9 +49,9 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .on("click", reset);
 
     const g = svg.append("g")
-        .attr("fill", "darkgray")
-        .attr("stroke", "white")
-        .attr("cursor", "grab");  
+        // .attr("fill", "darkgray")
+        // .attr("stroke", "white")
+        // .attr("cursor", "grab");  
     /* -------------------------------------------------------------------------- */
     /*                              DRAWING FUNCTIONS                             */
     /* -------------------------------------------------------------------------- */
@@ -75,10 +75,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     //  Function to draw DC map   
     function draw_map(){
         g.selectAll("path")
-            .data(dataset.features)
-            .enter()
-            .append("path")
-            .attr("d", path).lower()
+            .attr("d", path)
             .style("stroke", "white")
             .style("fill", "transparent") 
             .transition()
@@ -109,7 +106,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // Function to color the points
     function color_points(index){
         color = get_color_domain(index);
-        svg.selectAll("circle")
+        g.selectAll("circle")
         .transition()
         .duration(1000)
         .attr("stroke","black")
@@ -155,8 +152,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     //  Function to color DC map   
     function color_map(){
-        svg.selectAll("path")
-            .style("fill", "#343a3f") 
+        g.selectAll("path")
+            .style("fill", "#343a3f")
             .transition()
             .duration(3000)  
     };
@@ -165,7 +162,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         
     // Function to clear points
     function clean_points(){
-        svg.selectAll('circle')
+        g.selectAll('circle')
         .transition()
         .duration(2000)
         .remove();
@@ -173,7 +170,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     // Function to clear map
     function clean_map(){
-        svg.selectAll('path')
+        g.selectAll('path')
         .transition()
         .duration(2000)
         .remove();
@@ -182,89 +179,55 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /*                                    ZOOM                                    */
     /* -------------------------------------------------------------------------- */
 
-    // function allow_zoom(){
 
+        projection.fitSize([svg_width, svg_height],dataset);
+        const clusters = g.append("g")
+        .attr("fill", "transparent")
+        // .attr("cursor", "grab")
+          .selectAll("path")
+          .data(dataset.features)
+          .join("path")
+          .on("click", clicked)
+          .attr("d", path);
+      
+          g.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "transparent")
+            .attr("stroke-linejoin", "round")
+            .attr("d", path)      
+            // .attr("cursor", "help")
+      
 
-        // projection.fitSize([svg_width, svg_height],dataset);
-        // const clusters = g.append("g")
-        // .attr("fill", "transparent")
-        // .attr("cursor", "pointer")
-        //   .selectAll("path")
-        //   .data(dataset.features)
-        //   .join("path")
-        //   .on("click", clicked)
-        //   .attr("d", path).lower();
-      
-        //   g.append("path")
-        //     .attr("fill", "none")
-        //     .attr("stroke", "white")
-        //     .attr("stroke-linejoin", "round")
-        //     .attr("d", path).lower();
-      
-      
-        // center = path.centroid(dupont);
-        // console.log(center);
-        // bounds = path.bounds(dupont);
-        // console.log(bounds);
-        // padding = 10;
-        // start = [center[0], center[1], bounds[1][1] + padding - bounds[0][1] + padding];
-        // console.log("start",start);
-        // end = [svg_width / 2, svg_height / 2, svg_width / 2];
-        // console.log("end",end);
-        // k = Math.min(svg_width, svg_height) / start[2];
-        // console.log("k",k);
-        // translate = [svg_width / 2 - start[0] * k, svg_height / 2 - start[1] * k]
-        // transformEnd = `translate(${translate}) scale(${k})`
-    function allow_zoom(){ 
-      
-        svg.call(zoom);
-      
         function reset() {
-          clusters.transition().style("fill", null);
+          clusters.transition().style("fill", "#343a3f");
           svg.transition().duration(750).call(
             zoom.transform,
             d3.zoomIdentity,
-            d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
+            d3.zoomTransform(svg.node()).invert([svg_width / 2, svg_height / 2])
           );
         }
-      
-        // function clicked(event, d) {
-        //   const [[x0, y0], [x1, y1]] = path.bounds(d);
-        //   event.stopPropagation();
-        //   clusters.transition().style("fill", null);
-        //   d3.select(this).transition().style("fill", "red");
-        //   svg.transition().duration(750).call(
-        //     zoom.transform,
-        //     d3.zoomIdentity
-        //       .translate(width / 2, height / 2)
-        //       .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
-        //       .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-        //     d3.pointer(event, svg.node())
-        //   );
-        // }
-      
-          function clicked(event, d) {
+        
+        function clicked(event, d) {
           const [[x0, y0], [x1, y1]] = path.bounds(d);
           event.stopPropagation();
-          clusters.transition().style("fill", null);
-          d3.select(this).transition().style("fill", "#121619");
+          clusters.transition().style("fill", "transparent");
+          d3.select(this).transition().style("fill", "#343a3f");
           svg.transition().duration(750).call(
             zoom.transform,
             d3.zoomIdentity
               .translate(svg_width / 2, svg_height / 2)
-              .scale(Math.min(5, 0.5 / Math.max((x1 - x0) / svg_width, (y1 - y0) / svg_height)))
+              .scale(3)
               .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
             d3.pointer(event, svg.node())
           );
-        }
-      
+        }   
       
         function zoomed(event) {
           const {transform} = event;
           g.attr("transform", transform);
           g.attr("stroke-width", 1 / transform.k);
         }
-      }
+    // }
     /* -------------------------------------------------------------------------- */
     /*                                  SCROLLING                                 */
     /* -------------------------------------------------------------------------- */
@@ -290,17 +253,9 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     new scroll('test4',"50%", color_points2, color_points1);
     new scroll('test5',"50%", color_points3, color_points2);
     new scroll('test6',"50%", color_points4, color_points3);
-    new scroll('test7',"50%", allow_zoom, color_points4);
 
 
 
-
-
-    // new scroll('test1',"50%", color_points1, color_points0);
-    // new scroll('test2',"50%", color_points2, color_points1);
-    // new scroll('test3',"50%", color_points3, color_points2);
-    // new scroll('test4',"50%", color_points4, color_points3);
-    // new scroll('test5',"50%", color_points5, color_points4);
 
 
 })})});
