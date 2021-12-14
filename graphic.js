@@ -52,7 +52,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     const g = svg.append("g")
         .attr("cursor","default")
-        .on("dblclick.zoom",reset);
+        .on("dblclick.zoom", reset);
+
  
     /* -------------------------------------------------------------------------- */
     /*                              DRAWING FUNCTIONS                             */
@@ -227,7 +228,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
         svg.call(zoom)
         .on("wheel.zoom", null)
-        .on("dblclick.zoom", null);
+        .on("dblclick.zoom", reset);
 
         function reset() {
           clusters.transition().style("fill", "#343a3f").style("stroke", "white");
