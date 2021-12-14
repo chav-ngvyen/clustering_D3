@@ -66,7 +66,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .append("circle")
             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
-            .attr("r", 3)
+            .attr("r", 2)
             .attr("stroke","white")
             .attr("stroke-width",0.5)
             .attr("fill","transparent")
