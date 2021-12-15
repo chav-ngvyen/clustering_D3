@@ -1,812 +1,690 @@
-let dataset, svg
-let salarySizeScale, salaryXScale, categoryColorScale
-let simulation, nodes
-let categoryLegend, salaryLegend
+// Global variables
+let dataset, labels, synthetic, color_domain_max, synth_color_domain_max, topo;
+let circles, group;
+// Needed for zoom
+let reset, zoomed, clicked;
 
-const categories = ['Engineering', 'Business', 'Physical Sciences', 'Law & Public Policy', 'Computers & Mathematics', 'Agriculture & Natural Resources',
-'Industrial Arts & Consumer Services','Arts', 'Health','Social Science', 'Biology & Life Science','Education','Humanities & Liberal Arts',
-'Psychology & Social Work','Communications & Journalism','Interdisciplinary']
+const margin = {left: 0, top: 100, bottom: 0, right: 0}
 
-const categoriesXY = {'Engineering': [0, 400, 57382, 23.9],
-                        'Business': [0, 600, 43538, 48.3],
-                        'Physical Sciences': [0, 800, 41890, 50.9],
-                        'Law & Public Policy': [0, 200, 42200, 48.3],
-                        'Computers & Mathematics': [200, 400, 42745, 31.2],
-                        'Agriculture & Natural Resources': [200, 600, 36900, 40.5],
-                        'Industrial Arts & Consumer Services': [200, 800, 36342, 35.0],
-                        'Arts': [200, 200, 33062, 60.4],
-                        'Health': [400, 400, 36825, 79.5],
-                        'Social Science': [400, 600, 37344, 55.4],
-                        'Biology & Life Science': [400, 800, 36421, 58.7],
-                        'Education': [400, 200, 32350, 74.9],
-                        'Humanities & Liberal Arts': [600, 400, 31913, 63.2],
-                        'Psychology & Social Work': [600, 600, 30100, 79.4],
-                        'Communications & Journalism': [600, 800, 34500, 65.9],
-                        'Interdisciplinary': [600, 200, 35000, 77.1]}
+// Height and width of browser
+const height =  window.innerHeight
+const width = window.innerWidth
 
-const margin = {left: 170, top: 50, bottom: 50, right: 20}
-const width = 1000 - margin.left - margin.right
-const height = 950 - margin.top - margin.bottom
+const svg_height = height
+const svg_width = svg_height*0.85
 
-//Read Data, convert numerical categories into floats
-//Create the initial visualisation
+// // Define the SVG
+// let svg = d3.select("svg")
+//     .attr('width',svg_width)
+//     .attr('height',svg_height)
+
+// Projection and path
+let projection = d3.geoMercator();
+// let synth_projection = d3.geoMercator();
 
 
-d3.csv('data/recent-grads.csv', function(d){
-    return {
-        Major: d.Major,
-        Total: +d.Total,
-        Men: +d.Men,
-        Women: +d.Women,
-        Median: +d.Median,
-        Unemployment: +d.Unemployment_rate,
-        Category: d.Major_category,
-        ShareWomen: +d.ShareWomen, 
-        HistCol: +d.Histogram_column,
-        Midpoint: +d.midpoint
+let path = d3.geoPath().projection(projection);
+
+// Read in data
+d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
+d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
+    d3.json("GeoJSON/synthetic_labeled.geojson").then(function(l){
+
+    // d3.json("GeoJSON/labeled.geojson").then(function(l){
+    // d3.json("GeoJSON/synthetic.geojson").then(function(s){
+        dataset = d;
+        labels = l;
+        // synthetic = s;
+        topo = json;
+        // console.log(d3.geoBounds(dataset));
+        console.log(d3.geoBounds(dataset));
+        // console.log(d3.geoBounds(labels.features.properties.synth_coordinates));
+        // console.log(projection(labels.features[0].properties.synth_coordinates));
+        // console.log(projection(labels.features[0].geometry.coordinates));
+
+
+
+
+        // console.log(labels.features[0].properties.synth_coordinates);
+        // console.log(labels.features[0].geometry.coordinates);
+
+        // console.log(projection(labels.features[0].geometry.coordinates));
+        // console.log(projection(labels.features[0].properties.synth_coordinates));
+
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 ZOOM STUFF                                   */
+    /* -------------------------------------------------------------------------- */
+    neighborhoods = topojson.feature(topo, topo.objects.Neighborhood_Clusters).features;
+    dupont = neighborhoods[13];
+
+    const zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                     SVG                                    */
+    /* -------------------------------------------------------------------------- */
+     // Define the SVG
+    let svg = d3.select("svg")
+        .attr('width',svg_width)
+        .attr('height',svg_height)
+        .on("click",reset)
+        .on("dblclick.zoom", reset);
+
+
+    const g = svg.append("g")
+        .attr("cursor","default")
+        .on("dblclick.zoom", reset);
+
+    /* ------------------------------- COLOR SCHEME ------------------------------- */
+    // Get the color domain max for each simulation
+    let color_domain_max = labels.features[0]['properties'].domain_max;
+    let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
+
+
+
+    // Since some examples have many labels, I'm going to combine 2 color palletes
+    var my_color_scheme1 = d3.schemeTableau10;
+    var my_color_scheme2 = d3.schemeAccent;
+    var my_colors = my_color_scheme1.concat(my_color_scheme2);
+    synth_color = d3.scaleOrdinal().domain([0,19]).range(my_colors);
+
+    /* -------------------------------------------------------------------------- */
+    // /*                                   COLORS                                   */
+    // /* -------------------------------------------------------------------------- */
+    
+    
+    // // labeled.geojson was preprocessed to contain column domain_max with list of max label for each iteration
+    // let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
+    // // console.log("This is the max label for each example:", color_domain_max);
+
+    // // Since some examples have many labels, I'm going to combine 2 color palletes
+    // var synth_color_scheme1 = d3.schemeTableau10;
+    // var synth_color_scheme2 = d3.schemeAccent;
+    // var synth_colors = synth_color_scheme1.concat(synth_color_scheme2);
+    
+    // // Function to update the color range depending on how many labels (clusters) we got
+    // function get_synth_color_domain(index){
+    //     let synth_color =  d3.scaleOrdinal()
+    //                     .domain([0,synth_color_domain_max[index]])
+    //                     .range(synth_colors);
+    //     return synth_color
+    // };
+
+
+    /* -------------- TRYING THIS TO SEE IF TRANSITION IS SMOOTHER -------------- */
+    let group = svg.selectAll('g')
+      .data(labels.features)
+      .enter()
+      .append("g");
+    //create circles
+    let circles = group.append("circle")
+
+
+    // synthetic circles 
+    let synth_circles = () =>{
+        circles
+        .attr("stroke", "black")
+          .transition()
+          .delay((d, i) => 3 * i)
+          .duration(1000)
+        //   .ease("elastic")
+        //   .attr("width", 20)
+        //   .attr("height", 20)
+          .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
+          .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
+          .attr("r", 4)
+          .attr("stroke", "black")
+          .attr("stroke-width", 0.5)
+          .attr("fill", "transparent")
     };
-}).then(data => {
-    dataset = data
-    console.log(dataset)
-    createScales()
-    setTimeout(drawInitial(), 100)
-})
 
-const colors = ['#ffcc00', '#ff6666', '#cc0066', '#66cccc', '#f688bb', '#65587f', '#baf1a1', '#333333', '#75b79e',  '#66cccc', '#9de3d0', '#f1935c', '#0c7b93', '#eab0d9', '#baf1a1', '#9399ff']
-
-//Create all the scales and save to global variables
-
-function createScales(){
-    salarySizeScale = d3.scaleLinear(d3.extent(dataset, d => d.Median), [5, 35])
-    salaryXScale = d3.scaleLinear(d3.extent(dataset, d => d.Median), [margin.left, margin.left + width+250])
-    salaryYScale = d3.scaleLinear([20000, 110000], [margin.top + height, margin.top])
-    categoryColorScale = d3.scaleOrdinal(categories, colors)
-    shareWomenXScale = d3.scaleLinear(d3.extent(dataset, d => d.ShareWomen), [margin.left, margin.left + width])
-    enrollmentScale = d3.scaleLinear(d3.extent(dataset, d => d.Total), [margin.left + 120, margin.left + width - 50])
-    enrollmentSizeScale = d3.scaleLinear(d3.extent(dataset, d=> d.Total), [10,60])
-    histXScale = d3.scaleLinear(d3.extent(dataset, d => d.Midpoint), [margin.left, margin.left + width])
-    histYScale = d3.scaleLinear(d3.extent(dataset, d => d.HistCol), [margin.top + height, margin.top])
-}
-
-function createLegend(x, y){
-    let svg = d3.select('#legend')
-
-    svg.append('g')
-        .attr('class', 'categoryLegend')
-        .attr('transform', `translate(${x},${y})`)
-
-    categoryLegend = d3.legendColor()
-                            .shape('path', d3.symbol().type(d3.symbolCircle).size(150)())
-                            .shapePadding(10)
-                            .scale(categoryColorScale)
-    
-    d3.select('.categoryLegend')
-        .call(categoryLegend)
-}
-
-function createSizeLegend(){
-    let svg = d3.select('#legend2')
-    svg.append('g')
-        .attr('class', 'sizeLegend')
-        .attr('transform', `translate(100,50)`)
-
-    sizeLegend2 = d3.legendSize()
-        .scale(salarySizeScale)
-        .shape('circle')
-        .shapePadding(15)
-        .title('Salary Scale')
-        .labelFormat(d3.format("$,.2r"))
-        .cells(7)
-
-    d3.select('.sizeLegend')
-        .call(sizeLegend2)
-}
-
-function createSizeLegend2(){
-    let svg = d3.select('#legend3')
-    svg.append('g')
-        .attr('class', 'sizeLegend2')
-        .attr('transform', `translate(50,100)`)
-
-    sizeLegend2 = d3.legendSize()
-        .scale(enrollmentSizeScale)
-        .shape('circle')
-        .shapePadding(55)
-        .orient('horizontal')
-        .title('Enrolment Scale')
-        .labels(['1000', '200000', '400000'])
-        .labelOffset(30)
-        .cells(3)
-
-    d3.select('.sizeLegend2')
-        .call(sizeLegend2)
-}
-
-// All the initial elements should be create in the drawInitial function
-// As they are required, their attributes can be modified
-// They can be shown or hidden using their 'opacity' attribute
-// Each element should also have an associated class name for easy reference
-
-function drawInitial(){
-    createSizeLegend()
-    createSizeLegend2()
-
-    let svg = d3.select("#vis")
-                    .append('svg')
-                    .attr('width', 1000)
-                    .attr('height', 950)
-                    .attr('opacity', 1)
-
-    let xAxis = d3.axisBottom(salaryXScale)
-                    .ticks(4)
-                    .tickSize(height + 80)
-
-    let xAxisGroup = svg.append('g')
-        .attr('class', 'first-axis')
-        .attr('transform', 'translate(0, 0)')
-        .call(xAxis)
-        .call(g => g.select('.domain')
-            .remove())
-        .call(g => g.selectAll('.tick line'))
-            .attr('stroke-opacity', 0.2)
-            .attr('stroke-dasharray', 2.5)
-
-    // Instantiates the force simulation
-    // Has no forces. Actual forces are added and removed as required
-
-    simulation = d3.forceSimulation(dataset)
-
-     // Define each tick of simulation
-    simulation.on('tick', () => {
-        nodes
-            .attr('cx', d => d.x)
-            .attr('cy', d => d.y)
-    })
-
-    // Stop the simulation until later
-    simulation.stop()
-
-    // Selection of all the circles 
-    nodes = svg
-        .selectAll('circle')
-        .data(dataset)
-        .enter()
-        .append('circle')
-            .attr('fill', 'black')
-            .attr('r', 3)
-            .attr('cx', (d, i) => salaryXScale(d.Median) + 5)
-            .attr('cy', (d, i) => i * 5.2 + 30)
-            .attr('opacity', 0.8)
-        
-    // Add mouseover and mouseout events for all circles
-    // Changes opacity and adds border
-    svg.selectAll('circle')
-        .on('mouseover', mouseOver)
-        .on('mouseout', mouseOut)
-
-    function mouseOver(d, i){
-
-        console.log('hi')
-        d3.select(this)
-            .transition('mouseover').duration(100)
-            .attr('opacity', 1)
-            .attr('stroke-width', 5)
-            .attr('stroke', 'black')
-            
-        d3.select('#tooltip')
-            .style('left', (d3.event.pageX + 10)+ 'px')
-            .style('top', (d3.event.pageY - 25) + 'px')
-            .style('display', 'inline-block')
-            .html(`<strong>Major:</strong> ${d.Major[0] + d.Major.slice(1,).toLowerCase()} 
-                <br> <strong>Median Salary:</strong> $${d3.format(",.2r")(d.Median)} 
-                <br> <strong>Category:</strong> ${d.Category}
-                <br> <strong>% Female:</strong> ${Math.round(d.ShareWomen*100)}%
-                <br> <strong># Enrolled:</strong> ${d3.format(",.2r")(d.Total)}`)
-    }
-    
-    function mouseOut(d, i){
-        d3.select('#tooltip')
-            .style('display', 'none')
-
-        d3.select(this)
-            .transition('mouseout').duration(100)
-            .attr('opacity', 0.8)
-            .attr('stroke-width', 0)
-    }
-
-    //Small text label for first graph
-    svg.selectAll('.small-text')
-        .data(dataset)
-        .enter()
-        .append('text')
-            .text((d, i) => d.Major.toLowerCase())
-            .attr('class', 'small-text')
-            .attr('x', margin.left)
-            .attr('y', (d, i) => i * 5.2 + 30)
-            .attr('font-size', 7)
-            .attr('text-anchor', 'end')
-    
-    //All the required components for the small multiples charts
-    //Initialises the text and rectangles, and sets opacity to 0 
-    svg.selectAll('.cat-rect')
-        .data(categories).enter()
-        .append('rect')
-            .attr('class', 'cat-rect')
-            .attr('x', d => categoriesXY[d][0] + 120 + 1000)
-            .attr('y', d => categoriesXY[d][1] + 30)
-            .attr('width', 160)
-            .attr('height', 30)
-            .attr('opacity', 0)
-            .attr('fill', 'grey')
-
-
-    svg.selectAll('.lab-text')
-        .data(categories).enter()
-        .append('text')
-        .attr('class', 'lab-text')
-        .attr('opacity', 0)
-        .raise()
-
-    svg.selectAll('.lab-text')
-        .text(d => `Average: $${d3.format(",.2r")(categoriesXY[d][2])}`)
-        .attr('x', d => categoriesXY[d][0] + 200 + 1000)
-        .attr('y', d => categoriesXY[d][1] - 500)
-        .attr('font-family', 'Domine')
-        .attr('font-size', '12px')
-        .attr('font-weight', 700)
-        .attr('fill', 'black')
-        .attr('text-anchor', 'middle')       
-
-    svg.selectAll('.lab-text')
-            .on('mouseover', function(d, i){
-                d3.select(this)
-                    .text(d)
-            })
-            .on('mouseout', function(d, i){
-                d3.select(this)
-                    .text(d => `Average: $${d3.format(",.2r")(categoriesXY[d][2])}`)
-            })
-
-
-    // Best fit line for gender scatter plot
-
-    const bestFitLine = [{x: 0, y: 56093}, {x: 1, y: 25423}]
-    const lineFunction = d3.line()
-                            .x(d => shareWomenXScale(d.x))
-                            .y(d => salaryYScale(d.y))
-
-    // Axes for Scatter Plot
-    svg.append('path')
-        .transition('best-fit-line').duration(430)
-            .attr('class', 'best-fit')
-            .attr('d', lineFunction(bestFitLine))
-            .attr('stroke', 'grey')
-            .attr('stroke-dasharray', 6.2)
-            .attr('opacity', 0)
-            .attr('stroke-width', 3)
-
-    let scatterxAxis = d3.axisBottom(shareWomenXScale)
-    let scatteryAxis = d3.axisLeft(salaryYScale).tickSize([width])
-
-    svg.append('g')
-        .call(scatterxAxis)
-        .attr('class', 'scatter-x')
-        .attr('opacity', 0)
-        .attr('transform', `translate(0, ${height + margin.top})`)
-        .call(g => g.select('.domain')
-            .remove())
-    
-    svg.append('g')
-        .call(scatteryAxis)
-        .attr('class', 'scatter-y')
-        .attr('opacity', 0)
-        .attr('transform', `translate(${margin.left - 20 + width}, 0)`)
-        .call(g => g.select('.domain')
-            .remove())
-        .call(g => g.selectAll('.tick line'))
-            .attr('stroke-opacity', 0.2)
-            .attr('stroke-dasharray', 2.5)
-
-    // Axes for Histogram 
-
-    let histxAxis = d3.axisBottom(enrollmentScale)
-
-    svg.append('g')
-        .attr('class', 'enrolment-axis')
-        .attr('transform', 'translate(0, 700)')
-        .attr('opacity', 0)
-        .call(histxAxis)
-}
-
-//Cleaning Function
-//Will hide all the elements which are not necessary for a given chart type 
-
-function clean(chartType){
-    let svg = d3.select('#vis').select('svg')
-    if (chartType !== "isScatter") {
-        svg.select('.scatter-x').transition().attr('opacity', 0)
-        svg.select('.scatter-y').transition().attr('opacity', 0)
-        svg.select('.best-fit').transition().duration(200).attr('opacity', 0)
-    }
-    if (chartType !== "isMultiples"){
-        svg.selectAll('.lab-text').transition().attr('opacity', 0)
-            .attr('x', 1800)
-        svg.selectAll('.cat-rect').transition().attr('opacity', 0)
-            .attr('x', 1800)
-    }
-    if (chartType !== "isFirst"){
-        svg.select('.first-axis').transition().attr('opacity', 0)
-        svg.selectAll('.small-text').transition().attr('opacity', 0)
-            .attr('x', -200)
-    }
-    if (chartType !== "isHist"){
-        svg.selectAll('.hist-axis').transition().attr('opacity', 0)
-    }
-    if (chartType !== "isBubble"){
-        svg.select('.enrolment-axis').transition().attr('opacity', 0)
-    }
-}
-
-//First draw function
-
-function draw1(){
-    //Stop simulation
-    simulation.stop()
-    
-    let svg = d3.select("#vis")
-                    .select('svg')
-                    .attr('width', 1000)
-                    .attr('height', 950)
-    
-    clean('isFirst')
-
-    d3.select('.categoryLegend').transition().remove()
-
-    svg.select('.first-axis')
-        .attr('opacity', 1)
-    
-    svg.selectAll('circle')
-        .transition().duration(500).delay(100)
-        .attr('fill', 'black')
-        .attr('r', 3)
-        .attr('cx', (d, i) => salaryXScale(d.Median)+5)
-        .attr('cy', (d, i) => i * 5.2 + 30)
-
-    svg.selectAll('.small-text').transition()
-        .attr('opacity', 1)
-        .attr('x', margin.left)
-        .attr('y', (d, i) => i * 5.2 + 30)
-}
-
-
-function draw2(){
-    let svg = d3.select("#vis").select('svg')
-    
-    clean('none')
-
-    svg.selectAll('circle')
-        .transition().duration(300).delay((d, i) => i * 5)
-        .attr('r', d => salarySizeScale(d.Median) * 1.2)
-        .attr('fill', d => categoryColorScale(d.Category))
-
-    simulation  
-        .force('charge', d3.forceManyBody().strength([2]))
-        .force('forceX', d3.forceX(d => categoriesXY[d.Category][0] + 200))
-        .force('forceY', d3.forceY(d => categoriesXY[d.Category][1] - 50))
-        .force('collide', d3.forceCollide(d => salarySizeScale(d.Median) + 4))
-        .alphaDecay([0.02])
-
-    //Reheat simulation and restart
-    simulation.alpha(0.9).restart()
-    
-    createLegend(20, 50)
-}
-
-function draw3(){
-    let svg = d3.select("#vis").select('svg')
-    clean('isMultiples')
-    
-    svg.selectAll('circle')
-        .transition().duration(400).delay((d, i) => i * 5)
-        .attr('r', d => salarySizeScale(d.Median) * 1.2)
-        .attr('fill', d => categoryColorScale(d.Category))
-
-    svg.selectAll('.cat-rect').transition().duration(300).delay((d, i) => i * 30)
-        .attr('opacity', 0.2)
-        .attr('x', d => categoriesXY[d][0] + 120)
-        
-    svg.selectAll('.lab-text').transition().duration(300).delay((d, i) => i * 30)
-        .text(d => `Average: $${d3.format(",.2r")(categoriesXY[d][2])}`)
-        .attr('x', d => categoriesXY[d][0] + 200)   
-        .attr('y', d => categoriesXY[d][1] + 50)
-        .attr('opacity', 1)
-
-    svg.selectAll('.lab-text')
-        .on('mouseover', function(d, i){
-            d3.select(this)
-                .text(d)
-        })
-        .on('mouseout', function(d, i){
-            d3.select(this)
-                .text(d => `Average: $${d3.format(",.2r")(categoriesXY[d][2])}`)
-        })
-
-    simulation  
-        .force('charge', d3.forceManyBody().strength([2]))
-        .force('forceX', d3.forceX(d => categoriesXY[d.Category][0] + 200))
-        .force('forceY', d3.forceY(d => categoriesXY[d.Category][1] - 50))
-        .force('collide', d3.forceCollide(d => salarySizeScale(d.Median) + 4))
-        .alpha(0.7).alphaDecay(0.02).restart()
-
-}
-
-function draw5(){
-    
-    let svg = d3.select('#vis').select('svg')
-    clean('isMultiples')
-
-    simulation
-        .force('forceX', d3.forceX(d => categoriesXY[d.Category][0] + 200))
-        .force('forceY', d3.forceY(d => categoriesXY[d.Category][1] - 50))
-        .force('collide', d3.forceCollide(d => salarySizeScale(d.Median) + 4))
-
-    simulation.alpha(1).restart()
-   
-    svg.selectAll('.lab-text').transition().duration(300).delay((d, i) => i * 30)
-        .text(d => `% Female: ${(categoriesXY[d][3])}%`)
-        .attr('x', d => categoriesXY[d][0] + 200)   
-        .attr('y', d => categoriesXY[d][1] + 50)
-        .attr('opacity', 1)
-    
-    svg.selectAll('.lab-text')
-        .on('mouseover', function(d, i){
-            d3.select(this)
-                .text(d)
-        })
-        .on('mouseout', function(d, i){
-            d3.select(this)
-                .text(d => `% Female: ${(categoriesXY[d][3])}%`)
-        })
-   
-    svg.selectAll('.cat-rect').transition().duration(300).delay((d, i) => i * 30)
-        .attr('opacity', 0.2)
-        .attr('x', d => categoriesXY[d][0] + 120)
-
-    svg.selectAll('circle')
-        .transition().duration(400).delay((d, i) => i * 4)
-            .attr('fill', colorByGender)
-            .attr('r', d => salarySizeScale(d.Median))
-
-}
-
-function colorByGender(d, i){
-    if (d.ShareWomen < 0.4){
-        return 'blue'
-    } else if (d.ShareWomen > 0.6) {
-        return 'red'
-    } else {
-        return 'grey'
-    }
-}
-
-function draw6(){
-    simulation.stop()
-    
-    let svg = d3.select("#vis").select("svg")
-    clean('isScatter')
-
-    svg.selectAll('.scatter-x').transition().attr('opacity', 0.7).selectAll('.domain').attr('opacity', 1)
-    svg.selectAll('.scatter-y').transition().attr('opacity', 0.7).selectAll('.domain').attr('opacity', 1)
-
-    svg.selectAll('circle')
-        .transition().duration(800).ease(d3.easeBack)
-        .attr('cx', d => shareWomenXScale(d.ShareWomen))
-        .attr('cy', d => salaryYScale(d.Median))
-    
-    svg.selectAll('circle').transition(1600)
-        .attr('fill', colorByGender)
-        .attr('r', 10)
-
-    svg.select('.best-fit').transition().duration(300)
-        .attr('opacity', 0.5)
-   
-}
-
-function draw7(){
-    let svg = d3.select('#vis').select('svg')
-
-    clean('isBubble')
-
-    simulation
-        .force('forceX', d3.forceX(d => enrollmentScale(d.Total)))
-        .force('forceY', d3.forceY(500))
-        .force('collide', d3.forceCollide(d => enrollmentSizeScale(d.Total) + 2))
-        .alpha(0.8).alphaDecay(0.05).restart()
-
-    svg.selectAll('circle')
-        .transition().duration(300).delay((d, i) => i * 4)
-        .attr('r', d => enrollmentSizeScale(d.Total))
-        .attr('fill', d => categoryColorScale(d.Category))
-
-    //Show enrolment axis (remember to include domain)
-    svg.select('.enrolment-axis').attr('opacity', 0.5).selectAll('.domain').attr('opacity', 1)
-
-}
-
-function draw4(){
-    let svg = d3.select('#vis').select('svg')
-
-    clean('isHist')
-
-    simulation.stop()
-
-    svg.selectAll('circle')
-        .transition().duration(600).delay((d, i) => i * 2).ease(d3.easeBack)
-            .attr('r', 10)
-            .attr('cx', d => histXScale(d.Midpoint))
-            .attr('cy', d => histYScale(d.HistCol))
-            .attr('fill', d => categoryColorScale(d.Category))
-
-    let xAxis = d3.axisBottom(histXScale)
-    svg.append('g')
-        .attr('class', 'hist-axis')
-        .attr('transform', `translate(0, ${height + margin.top + 10})`)
-        .call(xAxis)
-
-    svg.selectAll('.lab-text')
-        .on('mouseout', )
-}
-
-function draw8(){
-    clean('none')
-
-    let svg = d3.select('#vis').select('svg')
-    svg.selectAll('circle')
+    let synth_color_init = () =>{
+        // synth_color = d3.scaleOrdinal().domain([0,19]).range(my_colors);
+        circles
         .transition()
-        .attr('r', d => salarySizeScale(d.Median) * 1.6)
-        .attr('fill', d => categoryColorScale(d.Category))
+        .duration(2000)
+        .style("fill", function(d) {
+                return synth_color(d.properties.synth_labels)
+            })
+    }; 
+    let clear_points = () =>{
+        circles
+        .style("fill", "transparent")
+        .style("stroke", "black")
+        .transition()
+        .duration(2000)
 
-    simulation 
-        .force('forceX', d3.forceX(500))
-        .force('forceY', d3.forceY(500))
-        .force('collide', d3.forceCollide(d => salarySizeScale(d.Median) * 1.6 + 4))
-        .alpha(0.6).alphaDecay(0.05).restart()
-        
-}
+    }; 
 
-//Array of all the graph functions
-//Will be called from the scroller functionality
-
-let activationFunctions = [
-    draw1,
-    draw2,
-    draw3,
-    draw4,
-    draw5, 
-    draw6, 
-    draw7,
-    draw8
-]
-
-//All the scrolling function
-//Will draw a new graph based on the index provided by the scroll
-
-
-let scroll = scroller()
-    .container(d3.select('#graphic'))
-scroll()
-
-let lastIndex, activeIndex = 0
-
-scroll.on('active', function(index){
-    d3.selectAll('.step')
-        .transition().duration(500)
-        .style('opacity', function (d, i) {return i === index ? 1 : 0.1;});
     
-    activeIndex = index
-    let sign = (activeIndex - lastIndex) < 0 ? -1 : 1; 
-    let scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
-    scrolledSections.forEach(i => {
-        activationFunctions[i]();
-    })
-    lastIndex = activeIndex;
+    // Function to update the color range depending on how many labels (clusters) we got
+    function get_color_domain(type, index){
+        if (type == "synth"){
+            color_range = d3.scaleOrdinal().domain([0,synth_color_domain_max[index]]).range(my_colors);
+        }
+        else if (type == "real"){
+            color_range = d3.scaleOrdinal().domain([0,color_domain_max[index]]).range(my_colors);
+        }
+        return color_range
+    };
 
-})
+    // // Function to color the points
+    // function synth_color_points(index){
+    //     synth_color = get_synth_color_domain(index);
+    //     g.selectAll("circle")
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("stroke","black")
+    //     .attr("stroke-width",0.5)
+    //     .style("fill", function(d) {
+    //         if (d.properties.synth_labels_gen[index] !=-1) {
+    //             return synth_color(d.properties.synth_labels_gen[index]);
+    //         } else {
+    //             return "transparent"
+    //         }
+    //      })
+    //     .style("stroke", function(d) {
+    //         if (d.properties.synth_labels_gen[index] ==-1) {
+    //             return "white";
+    //         }
+    //      })
+    // };
+    function color_points(type, index){
+        to_color = get_color_domain(type,index);
+        circles
+        .transition()
+        .duration(1000)
+        .style("fill", function(d) { 
+            if (type == "synth"){
+                if (d.properties.synth_labels_gen[index] ==-1) {
+                    return "transparent";
+            } else {
+                    return to_color(d.properties.synth_labels_gen[index]);
+            }}
+            if (type == "real"){
+                if (d.properties.labels[index] ==-1) {
+                    return "transparent";
+            } else {
+                    return to_color(d.properties.labels[index]);
+            }}
+        })
+    };
 
-scroll.on('progress', function(index, progress){
-    if (index == 2 & progress > 0.7){
+    // function clear_points(type){
+    //     circles
+    //     .transition()
+    //     .duration(1000)
+    //     .style("fill", function(d) { 
+    //         if (type == "synth"){
+    //             if (d.properties.synth_labels_gen[index] ==-1) {
+    //                 return "transparent";
+    //         } else {
+    // }
 
+
+    function color_points_synth0(){
+        color_points("synth",0)
+    };
+
+    function color_points_synth1(){
+        color_points("synth",1)
+    };
+
+    function color_points_real0(){
+        color_points("real",0)
     }
-})
-// // Global variables
-// // let svg, dataset, projection, path
-// // let links, nodes
-
-
-// // Visualization parameters
-// const margin = {left: 0, top: 50, bottom: 50, right: 50}
-// const width = 800 - margin.left - margin.right
-// const height = 800 - margin.top - margin.bottom
-
-// // var svg = d3.select("#vis")
-// //   .append("svg")
-// //   .attr("width",width)  // apply width,height to svg
-// //   .attr("height",height);
-
-// let projection = d3.geoMercator();
-// const path = d3.geoPath().projection(projection);
-// var svg = d3.select("#vis")
-//         .append('svg')
-//         .attr('width', width)
-//         .attr('height', height);
-
-// d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-//     dataset = d
-//     console.log(dataset)
-//     drawInitial()
-// });
-
-// function drawInitial(){
-//     projection.fitSize([width/2,height/2],dataset);
-//     svg.selectAll("path")
-//         .data(dataset.features)
-//         .enter()
-//         .append("path")
-//         .attr("d", path)
-//         .style("fill", "navy")
-//         .style("stroke", "yellow");
-// }
-
-// // function draw1(){
-// //     // let svg = d3.select("#vis")
-// //     // .select('svg')
-// //     // .attr('width', 800)
-// //     // .attr('height', 750)
-// //     // projection.fitSize([width/2,height/2],d);
-// //     // svg.selectAll("path")
-// //     //     .data(d.features)
-// //     //     .enter()
-// //     //     .append("path")
-// //     //     .attr("d", path)
-// //     //     .transition()
-// //     //     .style("fill", "black")
-// //     //     .style("stroke", "yellow");
-// // }
-
-// // // function draw2(){
-// // //     projection.fitSize([width/2,height/2],dataset);
-// // //     svg.selectAll("path")
-// // //         .data(dataset.features)
-// // //         .enter()
-// // //         .append("path")
-// // //         .attr("d", path)
-// // //         .style("fill", "red")
-// // //         .style("stroke", "yellow");
-// // // }
-
-// // // function draw3(){
-// // //     projection.fitSize([width/2,height/2],dataset);
-// // //     svg.selectAll("path")
-// // //         .data(dataset.features)
-// // //         .enter()
-// // //         .append("path")
-// // //         .attr("d", path)
-// // //         .style("fill", "white")
-// // //         .style("stroke", "yellow");}
 
 
 
-// // // //Cleaning Function
-// // // //Will hide all the elements which are not necessary for a given chart type 
+    // function synth_color_points(index){
+    //     synth_color = get_synth_color_domain(index);
+    //     g.selectAll("circle")
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("stroke","black")
+    //     .attr("stroke-width",0.5)
+    //     .style("fill", function(d) {
+    //         if (d.properties.synth_labels_gen[index] !=-1) {
+    //             return synth_color(d.properties.synth_labels_gen[index]);
+    //         } else {
+    //             return "transparent"
+    //         }
+    //      })
+    //     .style("stroke", function(d) {
+    //         if (d.properties.synth_labels_gen[index] ==-1) {
+    //             return "white";
+    //         }
+    //      })
+    // };
+    function color_points_synth0(){
+        color_points("synth",0)
+    };
 
-// // // function clean(chartType){
-// // //     let svg = d3.select('#vis').select('svg')
+      let real_circles = () =>{
+        circles
+        .transition()
+        //   .delay((d, i) => 5 * i)
+          .duration(2000)
+        //   .ease("elastic")
+        //   .attr("width", 20)
+        //   .attr("height", 20)
+          .attr("cx", function(d) {return projection(d.geometry.coordinates)[0]})
+          .attr("cy", function(d) {return projection(d.geometry.coordinates)[1]})
+          .attr("r", 4)
+          .attr("stroke", "black")
+          .attr("stroke-width", 0.5)
+          .attr("fill", "transparent")
+      };
 
-// // // }
-
-// // let activationFunctions = [draw1
-// //     // drawInitial,
-// // ]
-
-// // // This specifies that scrolling occurs over the 'graphic' div that contains the text content on the left side.
-// // let scroll = scroller()
-// //     .container(d3.select('#graphic'))
-
-// // scroll()
-
-// // let lastIndex, activeIndex = 0
-
-// // scroll.on('active', function(index){
-// //     d3.selectAll('.step')
-// //         .transition().duration(500)
-// //         .style('opacity', function (d, i) {return i === index ? 1 : 0.1;});
+    // let 
     
-// //     activeIndex = index
-// //     let sign = (activeIndex - lastIndex) < 0 ? -1 : 1; 
-// //     let scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
-// //     scrolledSections.forEach(i => {
-// //         activationFunctions[i]();
-// //     })
-// //     lastIndex = activeIndex;
-
-// // })
-
-// // scroll.on('progress', function(index, progress){
-// //     if (index == 2 & progress > 0.7){
-
-// //     }
-// // })
-
-
-// // // // // d3.json("GeoJSON/Neighborhood_Clusters.geojson",
-// // // // //     function(data) { 
-// // // // //       projection.fitSize([width/2,height/2],data); // adjust the projection to the features
-// // // // //       svg.selectAll("path")
-// // // // //       .data(data.features)
-// // // // //       .enter()
-// // // // //       .append("path")
-// // // // //       .attr("d", path)
-// // // // //       .style("fill", "navy")
-// // // // //       .style("stroke", "yellow"); // draw the features
-// // // // // })
-
-// // // // // // Global variables
-// // // // // let svg, dataset, simulation
-// // // // // let links, nodes
-
-// // // // // // Visualization parameters
-// // // // // const margin = {left: 50, top: 50, bottom: 50, right: 50}
-// // // // // const width = 800 - margin.left - margin.right
-// // // // // const height = 800 - margin.top - margin.bottom
-
-// // // // // // Coordinates were already rescaled to [-1 . 1] in previous processing
-// // // // // // Set domain to +0.05 to prevent node cut off
-
-// // // // // var x_scale = d3.scaleLinear()
-// // // // //     .domain([-1.05, 1.05])
-// // // // //     .range([0, margin.left + width + margin.right])
-
-// // // // // var y_scale = d3.scaleLinear()
-// // // // //     .domain([-1.05,  1.05])
-// // // // //     .range([margin.top + height, margin.top])
-
-
-// // // // // var projection = d3.geoMercator();
-// // // // // var path = d3.geoPath().projection(projection);
-// // // // // // Read in DC Metro Graph data and perform the following function to draw it
-// // // // // d3.json("GeoJSON/Neighborhood_Clusters.geojson")
-// // // // //     .then(function(d){
-// // // // //         dataset = d
-// // // // //         console.log(dataset)
-// // // // //         drawInitial()
-// // // // //     });
-
-// // // // // function drawInitial(){
-
-// // // // //     // Append the svg object to the body of the page, the 'vis' div
-// // // // //     let svg = d3.select("#vis")
-// // // // //         .append('svg')
-// // // // //         .attr('width', width)
-// // // // //         .attr('height', height)
     
-// // // // //     // Initialize the links
-// // // // //     projection.fitSize([width,height],data)
-// // // // //     svg.append("path").attr("d", path(dataset))
-// // // // // }
+    
+ 
+    // /* -------------------------------------------------------------------------- */
+    // /*                              DRAWING FUNCTIONS                             */
+    // /* -------------------------------------------------------------------------- */
+    // // Function to draw points 
+    // function draw_points(){
+    //     projection.fitSize([svg_width, svg_height],dataset);
+    //     g.selectAll("circle")
+    //         .data(labels.features)
+    //         .enter()
+    //         .append("circle")
+    //         .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
+    //         .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
+    //         .attr("r", 2)
+    //         .attr("stroke","white")
+    //         .attr("stroke-width",0.5)
+    //         .attr("fill","transparent")
+    //         .transition()
+    //         .duration(5000)
+    //     };
 
-// // // // // This specifies that scrolling occurs over the 'graphic' div that contains the text content on the left side.
-// // // // let scroll = scroller()
-// // // //     .container(d3.select('#graphic'))
+    // // function draw_points(){
+    // //     projection.fitSize([svg_width, svg_height],dataset);
+    // //     g.selectAll("circle")
+    // //         .data(labels.features)
+    // //         .enter()
+    // //         .append("circle")
+    // //         .attr("cx", function(d) { return projection(d.properties.synth_coordinates)[0]})
+    // //         .attr("cy", function(d) { return projection(d.properties.synth_coordinates)[1]})
+    // //         // .attr("cx", function(d) { return projection(d.geometry.coordinates)[0]})
+    // //         // .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]})
+    // //         .attr("r", 2)
+    // //         .attr("stroke","white")
+    // //         .attr("stroke-width",0.5)
+    // //         .attr("fill","transparent")
+    // //         .transition()
+    // //         .duration(5000)
+    // //     };
 
-// // // // scroll()
+    //     function draw_synthetic(){
+    //         projection.fitSize([svg_width, svg_height],dataset );
+    //         g.selectAll("circle")
+    //             .data(labels.features)
+    //             .enter()
+    //             .append("circle")
+    //             .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
+    //             .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
+    //             .attr("r", 4)
+    //             .attr("stroke","black")
+    //             .attr("stroke-width",0.5)
+    //             .attr("fill","transparent")
+    //         };
+        
+    //     function draw_real(){
+    //         g.selectAll("circle")
+    //             .data(labels.features)
+    //             .enter()
+    //             .append("circle")                
+    //             .transition()
+    //             .duration(5000)
+    //             .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
+    //             .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
+    //             // .attr("r", 3)
+    //             .style("stroke","black")
+    //             .attr("stroke-width",0.5)
+    //             .style("fill","transparent")
+    //         };
+    
 
-// // // // scroll.on('active', function(index){
-// // // //     // When index in inactive, opacity is reduced for the fade effect
-// // // //     d3.selectAll('.step')
-// // // //         // This transition call specifies over how much time the fade effect should occur.
-// // // //         // It specifies a duration of 500ms
-// // // //         .transition().duration(500)
-// // // //         .style('opacity', function (d, i) {return i === index ? 1 : 0.1;});
+    // //  Function to draw DC map   
+    // function draw_map(){
+    //     // projection.fitSize([svg_width, svg_height],dataset);
+    //     g.selectAll("path")
+    //         .attr("d", path)
+    //         .style("stroke", "white")
+    //         .style("fill", "transparent") 
+    //         .transition()
+    //         .duration(3000)  
+    // };
+    // /* -------------------------------------------------------------------------- */
+    // /*                             COLORING SYNTH POINTS                                */
+    // /* -------------------------------------------------------------------------- */
+    
+    // // // labeled.geojson was preprocessed to contain column domain_max with list of max label for each iteration
+    // // let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
+    // // // console.log("This is the max label for each example:", color_domain_max);
 
-// // // //     // Compared to Chow's version, I've stripped out code related to various activations of his visualization for now.
-// // // // })
+    // // // Since some examples have many labels, I'm going to combine 2 color palletes
+    // // var synth_color_scheme1 = d3.schemeTableau10;
+    // // var synth_color_scheme2 = d3.schemeAccent;
+    // // var synth_colors = synth_color_scheme1.concat(synth_color_scheme2);
+    
+    // // // Function to update the color range depending on how many labels (clusters) we got
+    // // function get_synth_color_domain(index){
+    // //     let synth_color =  d3.scaleOrdinal()
+    // //                     .domain([0,synth_color_domain_max[index]])
+    // //                     .range(synth_colors);
+    // //     return synth_color
+    // // };
+    
+    // // Color the synth points based on sklearn make_blobs
+    // // function synth_color_init(){
+    // //     synth_color = d3.scaleOrdinal().domain([0,19]).range(synth_colors);
+    // //     g.selectAll("circle")
+    // //     .transition()
+    // //     .duration(1000)
+    // //     .attr("stroke","black")
+    // //     .attr("stroke-width",0.5)
+    // //     .style("fill", function(d) {
+    // //             return synth_color(d.properties.synth_labels)
+    // //         })
+    // //     .style("stroke", "white")
+    // // }; 
+    
+
+    // // Function to color the points
+    // function synth_color_points(index){
+    //     synth_color = get_synth_color_domain(index);
+    //     g.selectAll("circle")
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("stroke","black")
+    //     .attr("stroke-width",0.5)
+    //     .style("fill", function(d) {
+    //         if (d.properties.synth_labels_gen[index] !=-1) {
+    //             return synth_color(d.properties.synth_labels_gen[index]);
+    //         } else {
+    //             return "transparent"
+    //         }
+    //      })
+    //     .style("stroke", function(d) {
+    //         if (d.properties.synth_labels_gen[index] ==-1) {
+    //             return "white";
+    //         }
+    //      })
+    // };
+
+    // // Functions to update colors for every iteration
+    // function synth_color_points0(){
+    //     synth_color_points(0)
+    // };
+
+    // function synth_color_points1(){
+    //     synth_color_points(1)
+    // };
+
+    // function synth_color_points2(){
+    //     synth_color_points(2)
+    // };
+
+    // function synth_color_points3(){
+    //     synth_color_points(3)
+    // };
+
+    // function synth_color_points4(){
+    //     synth_color_points(4)
+    // };
+
+    // function synth_color_points5(){
+    //     synth_color_points(5)
+    // };
+
+
+
+    
+    // /* -------------------------------------------------------------------------- */
+    // /*                             COLORING POINTS                                */
+    // /* -------------------------------------------------------------------------- */
+    
+    // // labeled.geojson was preprocessed to contain column domain_max with list of max label for each iteration
+    // // let color_domain_max = labels.features[0]['properties'].domain_max;
+    // // console.log("This is the max label for each example:", color_domain_max);
+
+    // // Since some examples have many labels, I'm going to combine 2 color palletes
+    // var color_scheme1 = d3.schemeTableau10;
+    // var color_scheme2 = d3.schemeAccent;
+    // var colors = color_scheme1.concat(color_scheme2);
+    
+    // // // Function to update the color range depending on how many labels (clusters) we got
+    // // function get_color_domain(index){
+    // //     let color =  d3.scaleOrdinal()
+    // //                     .domain([0,color_domain_max[index]])
+    // //                     .range(colors);
+    // //     return color
+    // // };
+
+    // // Function to color the points
+    // // function color_points(index){
+    // //     color = get_color_domain(index);
+    // //     g.selectAll("circle")
+    // //     .transition()
+    // //     .duration(1000)
+    // //     .attr("stroke","black")
+    // //     .attr("stroke-width",0.5)
+    // //     .style("fill", function(d) {
+    // //         if (d.properties.labels[index] !=-1) {
+    // //             return color(d.properties.labels[index]);
+    // //         } else {
+    // //             return "transparent"
+    // //         }
+    // //      })
+    // //     .style("stroke", function(d) {
+    // //         if (d.properties.labels[index] ==-1) {
+    // //             return "white";
+    // //         }
+    // //      })
+    // // };
+
+    // // // Functions to update colors for every iteration
+    // // function color_points0(){
+    // //     color_points(0)
+    // // };
+
+    // // function color_points1(){
+    // //     color_points(1)
+    // // };
+
+    // // function color_points2(){
+    // //     color_points(2)
+    // // };
+
+    // // function color_points3(){
+    // //     color_points(3)
+    // // };
+
+    // // function color_points4(){
+    // //     color_points(4)
+    // // };
+
+    // // function color_points5(){
+    // //     color_points(5)
+    // // };
+
+
+
+
+    // /* -------------------------------------------------------------------------- */
+    // /*                                COLORING MAP                                */
+    // /* -------------------------------------------------------------------------- */
+
+    // //  Function to color DC map   
+    // function color_map(){
+    //     g.selectAll("path")
+    //         .style("fill", "#343a3f")
+    //         .transition()
+    //         .duration(3000)  
+    // };
+
+    // //  Function to color specific path   
+    // function color_neighborhood(object){
+    //     g.selectAll("path")
+    //     .data(dataset.features)
+    //     .attr('d', path)
+    //     .transition()
+    //     .duration(1000)
+    //     .style("fill", function(d) {
+    //         if (d.properties.OBJECTID == object) {
+    //             // console.log(d.properties.NBH_NAMES);
+    //             return "#343a3f";
+    //         }            
+    //     }
+    // )};
+
+
+    // function color_dupont(){
+    //     color_neighborhood(14)
+    // };
+    /* -------------------------------------------------------------------------- */
+    // Functions to clean up the SVG
+        
+    // Function to clear points
+    function clean_points(){
+        group.selectAll('circle')
+        .transition()
+        .duration(2000)
+        .remove();
+    };
+
+    // Function to clear map
+    function clean_map(){
+        g.selectAll('path')
+        .transition()
+        .duration(2000)
+        .remove();
+    };
+    /* -------------------------------------------------------------------------- */
+    /*                                    ZOOM                                    */
+    /* -------------------------------------------------------------------------- */
+
+
+        projection.fitSize([svg_width, svg_height],dataset);
+        const clusters = g.append("g")
+        .attr("fill", "transparent")
+        // .attr("cursor", "grab")
+          .selectAll("path")
+          .data(dataset.features)
+          .join("path")
+          .on("click", clicked)
+          .attr("d", path);
+      
+          g.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "transparent")
+            .attr("stroke-linejoin", "round")
+            .attr("d", path)      
+            // .attr("cursor", "help")
+        
+        // Disable zoom on scroll to not mess with my scrolly
+
+        svg.call(zoom)
+        .on("wheel.zoom", null)
+        .on("dblclick.zoom", reset);
+
+        function reset() {
+          clusters.transition().style("fill", "#343a3f").style("stroke", "white");
+          svg.transition().duration(750).call(
+            zoom.transform,
+            d3.zoomIdentity,
+            d3.zoomTransform(svg.node()).invert([svg_width / 2, svg_height / 2])
+          );
+        }
+        
+        function clicked(event, d) {
+          const [[x0, y0], [x1, y1]] = path.bounds(d);
+          event.stopPropagation();
+        //   console.log(d.properties['OBJECTID']);
+          clusters.transition().style("fill", "transparent");
+          d3.select(this).transition().style("fill", "#343a3f");
+          svg.transition().duration(750).call(
+            zoom.transform,
+            d3.zoomIdentity
+              .translate(svg_width / 2, svg_height / 2)
+              .scale(5)
+              .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+            d3.pointer(event, svg.node())
+          );
+        }   
+      
+        function zoomed(event) {
+          const {transform} = event;
+          g.attr("transform", transform);
+          g.attr("stroke-width", 1 / transform.k);
+        }
+    // }
+    /* -------------------------------------------------------------------------- */
+    /*                                  SCROLLING                                 */
+    /* -------------------------------------------------------------------------- */
+    // Waypoints scroll constructor
+    function scroll(n, offset, func1, func2){
+        return new Waypoint({
+        element: document.getElementById(n),
+        handler: function(direction) {
+            direction == 'down' ? func1() : func2();
+            direction == 'up' ? func2() : func1();
+        },
+        //start 75% from the top of the div
+        offset: offset
+        });
+    };
+/* -------------------------------------------------------------------------- */
+/*                                PREVENT CLICK                               */
+/* -------------------------------------------------------------------------- */
+
+
+
+
+    // Scroll steps
+    new scroll('div1',"50%", synth_circles, clean_points);
+    new scroll('div4',"25%", synth_color_init, synth_circles);
+    // new scroll('div5',"50%", color_points_synth0, synth_color_init);
+    new scroll('div5',"75%", color_points_synth0, synth_color_init);
+    new scroll('div7',"25%", color_points_synth1, color_points_synth0);
+    new scroll('div9',"25%", clear_points, color_points_synth1);
+    new scroll('div10',"25%", real_circles, clear_points);
+
+
+
+
+    // new scroll('div6',"50%", color_points_synth0, color_points_synth0);
+
+
+
+
+    // new scroll('div6',"50%", synth_color_init, draw_synthetic);
+    // new scroll('div7',"50%", synth_color_points0, synth_color_init);
+    // new scroll('div8',"50%", synth_color_points1, synth_color_points0);
+    // new scroll('div9',"50%", draw_real, synth_color_points1);
+    // new scroll('div10',"50%", synth_color_points2, synth_color_points1);
+
+
+    // new scroll('test2',"50%", draw_map, draw_real);
+
+    // new scroll('test1',"50%", draw_map, color_points0);
+    // new scroll('test2',"50%", color_map, draw_map);
+    // new scroll('test3',"50%", color_points1, color_points0);
+    // new scroll('test4',"50%", color_points2, color_points1);
+    // new scroll('test5',"50%", color_points3, color_points2);
+    // new scroll('test6',"50%", color_dupont, color_points3);
+    // new scroll('test7',"50%", color_map, color_dupont);
+
+
+
+
+
+})})});
+
