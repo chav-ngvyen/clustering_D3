@@ -10,7 +10,7 @@ body{
  padding: 0;
  scroll-behavior: smooth;
  background: #33b1ff;
- color: black;
+ /* color: black; */
  font-family: 'Open Sans', sans-serif;
  font-weight: 300;
 }
@@ -20,7 +20,8 @@ h2{
 line-height: 1.25;
 padding-top: 45px;
 font-weight: 300;
-font-size: 2em
+font-size: 2em;
+color: #80343a3f;
 }
 
 
@@ -36,6 +37,7 @@ font-size: 1.5em;
 }
 strong{
 font-weight: 600;
+color: #21272a;
 }
 #graphic {
 max-width:  1440px;

@@ -39,66 +39,89 @@
         <div class="container">
 
 
-          <div>
-            <h2><strong>Hello and welcome!</strong></h2>
+          <div id = 'div0'>
+            <h2><strong>Hello and welcome!</strong></h2> <br><br>
             <p> 
-            Thank you for clicking on my scrollyboard.
+            Thank you for checking our my project! <br><br><br>
+
+            I will give a brief overview of density-based clustering algorithms <br><br><br>
+
+            And demonstrate how they work with a set of interactive examples <br><br><br>
+
+            This is a scrolling page, so please <strong>scroll</strong> along! 
             </p>
           </div>
 
           <div id ='div1'>
-            <h2>Welcome</h2>
+            <h2>On <strong> unlabeled data </strong></h2> <br><br>
             <p>
-            In this scrollyboard
-            <br><br>
+            Imagine you have a <strong>set of objects</strong> you would like to study    <br> <br>        
+            (or if you prefer to not use your imagination, they'd still appear in the corner of your eyes soon enough)
 
-            I will explain what <strong>clustering algorithms</strong> are 
-            <br><br>
-            and demonstrate how they <strong>work</strong>. 
+            <br><br><br>
+
+
+            You want to put these data points into <strong>groups </strong> before you can effectively study each group.
+            <br><br><br>
+
+            However, you don't know <strong>what</strong> the groups are
+            <br><br><br>
+
+            <strong>How many</strong> categories you can put your objects in
+            <br><br><br>
+            
+            And you also <strong>cannot</strong> look at the items <strong>individually</strong> to characterize them. 
+
+            
+
             </p>
             </div>
 
             <div id = 'div2'>
-            <h2>Density based clustering</h2>
+            <h2>On <strong> unsupervised machine learning algorithms</strong></h2> <br><br>
 
             <p>
-            Apologies for using the word scrollyboard <br><br><br>
-            But this took a really long time to set up <br><br><br>
-            So <br><br><br>
-            Scrollyboard <br><br><br>
-            Scrollyboard <br><br><br>
-            Scrollyboard <br><br><br>
-            Scrollyboard <br><br><br>
-            Anyhoo...
+            Clustering is a subset of <strong>unsupervised</strong> ML algorithms developed to solve your very problem! <br><br><br>
+
+            Clustering analysis can be thought of as <strong>classification</strong> techniques.<br><br><br>
+            
+            Because the labels are <strong>derived</strong> from the data itself, it is <strong> unsupervised </strong>, meaning there are no outcomes (labels) to compared the clusters to. <br><br><br>
+
+            <strong>Popular</strong> clustering algorithms include: <br><br>
+
+            1) K-means: <strong>Prototype-based</strong> clustering techniques create a one-level partitioning of the data objects. <br><br>
+
+            2) <strong>Hierarchical</strong> clustering. <br><br>
+
+            3) <strong>Density-based</strong> clustering, which is the focus of this tutorial.
           </div>    
 
           <div id = 'div3'>
-            <h2>More on density based clustering</h2>
+            <h2><strong>Density-based</strong> clustering </h2> <br><br>
 
-            <h2><strong> Blah  blah blah</strong></h2>
             <p>
-              Clustering are unsupervised algorithms <br>
-              blah blah blah <br>
-              blah blah blah <br>
-              blah blah blah <br>
-              blah blah blah <br>
-              blah blah blah <br>
+              By now, the <strong>unlabeled points</strong> on the left side of the page should have finished rendering <br><br>
+              Let's take a look at them!<br><br>
+              What do you know about them? Close to <strong>nothing!</strong><br><br> 
+              If I gave you a <strong style="color: yellow">box</strong> <strong style="color: red;"> of </strong> <strong style="color: blue;"> crayons </strong> and ask you to color the <strong>clusters of points</strong>
+              , would you be able to? <strong> Probably! </strong><br><br>
+              That is because you can visually see the blobs of points on a <strong>2-dimensional plane.</strong> <br><br>
+
             </p>
           </div>
 
           <div id = "div4"> 
-            <h2>Synthetic data example</h2>
-
-            <h2>Imagine we have a set of <strong> 2123 points</strong></h2>
+            <h2><strong>Synthetic</strong> data points</h2><br><br>
             <p>
-              We don't know <strong>what</strong> they are. <br><br>
-              We would like to put them into <strong>groups</strong><br><br>
-              So we can <strong> further examine </strong> them.
+            You are looking at a set of <strong>2123</strong> synthetic data points I created using <strong> sklearn's make_blob</strong> function <br><br><br>
+            Because I created this dataset, I know exactly <strong> how many clusters </strong> the points could be grouped into. <br><br><br>
+
+            There are <strong>20</strong> distinct clusters on screen, so let's color them accordingly!
             </p>
           </div>
 
           <div id = 'div5'>
-            <h2>Because the points are <strong> unlabeled</strong></h2>
+            <h2>Introducing <strong> DBSCAN</strong> - or <strong>D</strong>ensity-<strong>b</strong>ased <strong>s</strong>patial <strong>c</strong>lustering of <strong>a</strong>pplications with <strong>n</strong>oise </h2>
             <p>
               We need to a way to determine which group each point belongs to. <br>
               This is where <strong> density-based clustering methods </strong> comes into play.
@@ -146,8 +169,35 @@
 
             </p>
           </div>
+          <div id = "div_ref">
+            <p>
+              References 
+            </p>
+          </div>
+          <div id = "div_last">
+            <h2><strong>Thanks and shoutout and whatnot</strong></h2>
 
+            <p>I'd like to thank all the wonderful folks in my cohort, specifically:<br><br>
+              <a href="https://github.com/vegalla">Vince Egalla</a>, <a href="https://github.com/snadari">Sahithi Adari</a>, 
+              Merykokeb Belay for all their help and encouragement and hype and tech support and <strong>"career-support-Wednesdays." </strong> <br><br>
 
+              Proud founder of <strong>Tombs Day&trade;</strong> <a href="https://github.com/madelinekinnaird">Madeline Kinnaird</a> and the rest of Tombs Gang&trade;. <br><br>
+
+              The incredibly brilliant, bright, selfless, idealistic, and passionate <strong> future leaders</strong>: 
+              <a href="https://github.com/aadams149">Alex Adams</a>, Gloria Li, and <a href="https://github.com/ringmatt">Matt Ring</a>. <br><br>
+              Cynics like myself will always have hope for the future as long as people like Alex, Gloria and Matt are still inspiring us. 
+              <br><br> 
+              
+              And everypne else. <br><br>
+              
+              Y'all are great - and I don't mean it lightly. <br><br>
+              It was all thanks to you that my first in-person semester did not suck. Thank you!
+            <p>
+
+            </p>
+          </div>
+
+          
 
 
 
