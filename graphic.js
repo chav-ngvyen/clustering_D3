@@ -253,7 +253,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         circles
         .transition()
         //   .delay((d, i) => 5 * i)
-          .duration(1000)
+          .duration(5000)
         //   .ease("elastic")
         //   .attr("width", 20)
         //   .attr("height", 20)
