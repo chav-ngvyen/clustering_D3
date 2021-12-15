@@ -1,5 +1,5 @@
 // Global variables
-let dataset, labels, color_domain_max, topo;
+let dataset, labels, synthetic, color_domain_max, synth_color_domain_max, topo;
 // Needed for zoom
 let reset, zoomed, clicked;
 
@@ -19,15 +19,37 @@ const svg_width = svg_height*0.85
 
 // Projection and path
 let projection = d3.geoMercator();
+let synth_projection = d3.geoMercator();
+
+
 let path = d3.geoPath().projection(projection);
 
 // Read in data
 d3.json("GeoJSON/Neighborhood_Clusters.json").then(function(json){
 d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
-    d3.json("GeoJSON/labeled.geojson").then(function(l){
+    d3.json("GeoJSON/synthetic_labeled.geojson").then(function(l){
+
+    // d3.json("GeoJSON/labeled.geojson").then(function(l){
+    // d3.json("GeoJSON/synthetic.geojson").then(function(s){
         dataset = d;
         labels = l;
+        // synthetic = s;
         topo = json;
+        // console.log(d3.geoBounds(dataset));
+        console.log(d3.geoBounds(dataset));
+        // console.log(d3.geoBounds(labels.features.properties.synth_coordinates));
+        // console.log(projection(labels.features[0].properties.synth_coordinates));
+        // console.log(projection(labels.features[0].geometry.coordinates));
+
+
+
+
+        // console.log(labels.features[0].properties.synth_coordinates);
+        // console.log(labels.features[0].geometry.coordinates);
+
+        // console.log(projection(labels.features[0].geometry.coordinates));
+        // console.log(projection(labels.features[0].properties.synth_coordinates));
+
 
     /* -------------------------------------------------------------------------- */
     /*                                 ZOOM STUFF                                   */
@@ -54,6 +76,49 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .attr("cursor","default")
         .on("dblclick.zoom", reset);
 
+    /* -------------- TRYING THIS TO SEE IF TRANSITION IS SMOOTHER -------------- */
+    let group = svg.selectAll('g')
+      .data(labels.features)
+      .enter()
+      .append("g");
+    
+    //create circles
+    let circles = group.append("circle")
+
+    // synthetic circles 
+    let synth_circles = () =>{
+        circles
+          .transition()
+        //   .delay((d, i) => 5 * i)
+          .duration(100)
+        //   .ease("elastic")
+          .attr("width", 20)
+          .attr("height", 20)
+          .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
+          .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
+          .attr("r", 4)
+          .attr("stroke", "black")
+
+        //   .attr("fill", (d, i) => (i < 40 ? "#394147" : "#99c125"))
+        //   .attr("opacity", "0.5")
+      };
+
+      let real_circles = () =>{
+        circles
+          .transition()
+        //   .delay((d, i) => 5 * i)
+          .duration(100)
+        //   .ease("elastic")
+          .attr("width", 20)
+          .attr("height", 20)
+          .attr("cx", function(d) {return projection(d.geometry.coordinates)[0]})
+          .attr("cy", function(d) {return projection(d.geometry.coordinates)[1]})
+          .attr("r", 4)
+          .attr("stroke", "black")
+      };
+    
+    
+    
  
     /* -------------------------------------------------------------------------- */
     /*                              DRAWING FUNCTIONS                             */
@@ -74,9 +139,58 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .transition()
             .duration(5000)
         };
-     
+
+    // function draw_points(){
+    //     projection.fitSize([svg_width, svg_height],dataset);
+    //     g.selectAll("circle")
+    //         .data(labels.features)
+    //         .enter()
+    //         .append("circle")
+    //         .attr("cx", function(d) { return projection(d.properties.synth_coordinates)[0]})
+    //         .attr("cy", function(d) { return projection(d.properties.synth_coordinates)[1]})
+    //         // .attr("cx", function(d) { return projection(d.geometry.coordinates)[0]})
+    //         // .attr("cy", function(d) { return projection(d.geometry.coordinates)[1]})
+    //         .attr("r", 2)
+    //         .attr("stroke","white")
+    //         .attr("stroke-width",0.5)
+    //         .attr("fill","transparent")
+    //         .transition()
+    //         .duration(5000)
+    //     };
+
+        function draw_synthetic(){
+            projection.fitSize([svg_width, svg_height],dataset );
+            g.selectAll("circle")
+                .data(labels.features)
+                .enter()
+                .append("circle")
+                .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
+                .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
+                .attr("r", 4)
+                .attr("stroke","black")
+                .attr("stroke-width",0.5)
+                .attr("fill","transparent")
+            };
+        
+        function draw_real(){
+            g.selectAll("circle")
+                .data(labels.features)
+                .enter()
+                .append("circle")                
+                .transition()
+                .duration(5000)
+                .attr("cx", function(d) { return projection(d.geometry.coordinates)[0] })
+                .attr("cy", function(d) { return projection(d.geometry.coordinates)[1] })
+                // .attr("r", 3)
+                .style("stroke","black")
+                .attr("stroke-width",0.5)
+                .style("fill","transparent")
+            };
+    
+
     //  Function to draw DC map   
     function draw_map(){
+        // projection.fitSize([svg_width, svg_height],dataset);
         g.selectAll("path")
             .attr("d", path)
             .style("stroke", "white")
@@ -84,14 +198,99 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .transition()
             .duration(3000)  
     };
+    /* -------------------------------------------------------------------------- */
+    /*                             COLORING SYNTH POINTS                                */
+    /* -------------------------------------------------------------------------- */
+    
+    // labeled.geojson was preprocessed to contain column domain_max with list of max label for each iteration
+    let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
+    // console.log("This is the max label for each example:", color_domain_max);
 
+    // Since some examples have many labels, I'm going to combine 2 color palletes
+    var synth_color_scheme1 = d3.schemeTableau10;
+    var synth_color_scheme2 = d3.schemeAccent;
+    var synth_colors = synth_color_scheme1.concat(synth_color_scheme2);
+    
+    // Function to update the color range depending on how many labels (clusters) we got
+    function get_synth_color_domain(index){
+        let synth_color =  d3.scaleOrdinal()
+                        .domain([0,synth_color_domain_max[index]])
+                        .range(synth_colors);
+        return synth_color
+    };
+    
+    // Color the synth points based on sklearn make_blobs
+    function synth_color_init(){
+        synth_color = d3.scaleOrdinal().domain([0,19]).range(synth_colors);
+        g.selectAll("circle")
+        .transition()
+        .duration(1000)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+                return synth_color(d.properties.synth_labels)
+            })
+        .style("stroke", "white")
+    }; 
+    
+
+    // Function to color the points
+    function synth_color_points(index){
+        synth_color = get_synth_color_domain(index);
+        g.selectAll("circle")
+        .transition()
+        .duration(1000)
+        .attr("stroke","black")
+        .attr("stroke-width",0.5)
+        .style("fill", function(d) {
+            if (d.properties.synth_labels_gen[index] !=-1) {
+                return synth_color(d.properties.synth_labels_gen[index]);
+            } else {
+                return "transparent"
+            }
+         })
+        .style("stroke", function(d) {
+            if (d.properties.synth_labels_gen[index] ==-1) {
+                return "white";
+            }
+         })
+    };
+
+    // Functions to update colors for every iteration
+    function synth_color_points0(){
+        synth_color_points(0)
+    };
+
+    function synth_color_points1(){
+        synth_color_points(1)
+    };
+
+    function synth_color_points2(){
+        synth_color_points(2)
+    };
+
+    function synth_color_points3(){
+        synth_color_points(3)
+    };
+
+    function synth_color_points4(){
+        synth_color_points(4)
+    };
+
+    function synth_color_points5(){
+        synth_color_points(5)
+    };
+
+
+
+    
     /* -------------------------------------------------------------------------- */
     /*                             COLORING POINTS                                */
     /* -------------------------------------------------------------------------- */
     
     // labeled.geojson was preprocessed to contain column domain_max with list of max label for each iteration
     let color_domain_max = labels.features[0]['properties'].domain_max;
-    console.log("This is the max label for each example:", color_domain_max);
+    // console.log("This is the max label for each example:", color_domain_max);
 
     // Since some examples have many labels, I'm going to combine 2 color palletes
     var color_scheme1 = d3.schemeTableau10;
@@ -152,6 +351,9 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     function color_points5(){
         color_points(5)
     };
+
+
+
 
     /* -------------------------------------------------------------------------- */
     /*                                COLORING MAP                                */
@@ -276,19 +478,35 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         offset: offset
         });
     };
+/* -------------------------------------------------------------------------- */
+/*                                PREVENT CLICK                               */
+/* -------------------------------------------------------------------------- */
+
+
 
 
     // Scroll steps
-    new scroll('welcome',"50%", draw_points, clean_points);
-    new scroll('test',"50%", color_points0, draw_points);
-    new scroll('test1',"50%", draw_map, color_points0);
-    new scroll('test2',"50%", color_map, draw_map);
-    new scroll('test3',"50%", color_points1, color_points0);
-    new scroll('test4',"50%", color_points2, color_points1);
-    new scroll('test5',"50%", color_points3, color_points2);
-    new scroll('test6',"50%", color_dupont, color_points3);
-    new scroll('test7',"50%", color_map, color_dupont);
+    new scroll('div4',"50%", synth_circles, clean_points);
+    new scroll('div5',"50%", real_circles, synth_circles);
 
+
+
+    new scroll('div6',"50%", synth_color_init, draw_synthetic);
+    new scroll('div7',"50%", synth_color_points0, synth_color_init);
+    new scroll('div8',"50%", synth_color_points1, synth_color_points0);
+    new scroll('div9',"50%", draw_real, synth_color_points1);
+    // new scroll('div10',"50%", synth_color_points2, synth_color_points1);
+
+
+    // new scroll('test2',"50%", draw_map, draw_real);
+
+    // new scroll('test1',"50%", draw_map, color_points0);
+    // new scroll('test2',"50%", color_map, draw_map);
+    // new scroll('test3',"50%", color_points1, color_points0);
+    // new scroll('test4',"50%", color_points2, color_points1);
+    // new scroll('test5',"50%", color_points3, color_points2);
+    // new scroll('test6',"50%", color_dupont, color_points3);
+    // new scroll('test7',"50%", color_map, color_dupont);
 
 
 
