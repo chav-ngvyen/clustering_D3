@@ -69,9 +69,20 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .attr("stroke", "black")
         .attr("stroke-width", 0.5)
         .attr("fill", "transparent")};
-
-    // };
-
+    
+    // Call this before drawing the real circles so they'd move back after scrolling up 
+    let synth_circles_fast = () =>{
+        g.selectAll("circle")
+        .transition()
+          .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
+          .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
+          .attr("r", 4)
+          .attr("stroke", "black")
+          .attr("stroke-width", 0.5)
+          .attr("fill", "transparent")
+      };    
+    
+        
     let real_circles = () =>{
         g.selectAll("circle")
         .transition()
@@ -97,21 +108,24 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .transition()
             .duration(3000)
       };
+
+      
+
         //  Function to color specific path on map 
-        function color_neighborhood(object){
+    function highlight_neighborhood(object){
         g.selectAll("path")
         .transition()
         .duration(1000)
         .style("fill", function(d) {
-            if (d.properties.OBJECTID == object) {
-                return "orange";
+            if (d.properties.OBJECTID === object) {
+                return "black";
             }            
             }
         )};
 
 
-        function color_dupont(){
-            color_neighborhood(14)
+        function highlight_dupont(){
+            highlight_neighborhood(14)
         };
 
     /* -------------------------------------------------------------------------- */
@@ -142,12 +156,24 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* -------------------------------------------------------------------------- */
     /*                         FUNCTION TO DELETE POINTS                          */
     /* -------------------------------------------------------------------------- */
+    
+    // Use this is the first div
     function delete_points(){
         g.selectAll('circle')
         .transition()
         .duration(2000)
         .remove();
     };
+
+    function delete_map(){
+        clusters.selectAll("path")
+            .remove()
+            // .attr("d", path)
+            // .style("stroke", "transparent")
+            // .style("fill", "transparent") 
+    };
+
+
 
     /* -------------------------------------------------------------------------- */
     /*                      FUNCTIONS TO UPDATE POINTS COLOR                      */
@@ -183,28 +209,22 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
                     return to_color(d.properties.labels[index]);
             }}
         })
-    };
-
-    /* -------------------------------------------------------------------------- */
-    /*                                COLORING MAP                                */
-    /* -------------------------------------------------------------------------- */
-
-    //  Function to color specific path   
-    function color_neighborhood(object){
-        g.selectAll("path")
-        .data(neighborhoods.features)
-        .attr('d', path)
-        .transition()
-        .duration(1000)
-        .style("fill", function(d) {
-            if (d.properties.OBJECTID == object) {
-                return "red";
-            }            
-        }
-    )};
-
-    function color_dupont(){
-        color_neighborhood(14)
+        .style("stroke", function(d) { 
+            if (type == "synth"){
+                if (d.properties.synth_labels_gen[index] ==-1) {
+                    return "white";
+            } else {
+                    return "black";
+                    // return to_color(d.properties.synth_labels_gen[index]);
+            }}
+            if (type == "real"){
+                if (d.properties.labels[index] ==-1) {
+                    return "white";
+            } else {
+                    // return to_color(d.properties.labels[index]);
+                    return "black";
+            }}
+        })
     };
 
     /* -------------------------------------------------------------------------- */
@@ -271,7 +291,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // This function selects the circle and adds a border to help highlight selection
     // Additionally, a tooltip is transitioned in when selected to provide station details.
     function mouseOverNode(event, d){
-        console.log('hi')
         d3.select(this)
             .transition('mouseover').duration(100)
             .attr('stroke-width', 5)
@@ -296,7 +315,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // This function highlights the neighborhood when it's being hovered over
     // And display its name in the tool tip
     function mouseOverEdge(event, d){       
-        console.log(d.properties.NBH_NAMES);
         d3.select(this)
             .transition('mouseover').duration(100)
             .attr('stroke-width', 5)               
@@ -384,14 +402,20 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // new scroll('div5',"50%", color_points_synth0, synth_color_init);
     new scroll('div5',"75%", color_points_synth0, synth_color_init);
     new scroll('div7',"75%", color_points_synth1, color_points_synth0);
-    new scroll('div9',"75%", clear_points, color_points_synth1);
-    new scroll('div10',"75%", real_circles, clear_points);
-    new scroll('div11',"75%", draw_map, real_circles);
-    new scroll('div12',"75%", color_points_real0, draw_map);
-    new scroll('div13',"75%", color_points_real1, color_points_real0);
-    new scroll('div14',"75%", color_points_real2, color_points_real1);
-    new scroll('div15',"75%", color_points_real3, color_points_real2);
-    new scroll('div16',"75%", color_dupont, color_points_real3);
+    new scroll('div8',"75%", clear_points, color_points_synth1);
+   
+    new scroll('div9',"75%", synth_circles_fast, clear_points);
+    new scroll('div10',"75%", delete_map, synth_circles_fast);
+    new scroll('div11',"75%", clear_points, delete_map);
+    new scroll('div12',"75%", real_circles, clear_points);
+    new scroll('div13',"75%", draw_map, real_circles);
+    new scroll('div14',"75%", color_points_real0, draw_map);
+    new scroll('div15',"75%", color_points_real1, color_points_real0);
+    new scroll('div16',"75%", color_points_real2, color_points_real1);
+    new scroll('div17',"75%", color_points_real3, color_points_real2);
+    new scroll('div18',"75%", draw_map, color_points_real3);
+    new scroll('div19',"75%", highlight_dupont, draw_map);
+
 
 
 
