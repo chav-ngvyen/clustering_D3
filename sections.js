@@ -37,6 +37,39 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // Set group element so the map & points can be resized together in zoom mode
     const g = svg.append("g");
 
+    // let group = svg.selectAll('g')
+    // .data(labels.features)
+    // .enter()
+    // .append("g");
+
+    // group = group.selectAll('g')
+    // .data(neighborhoods.features)
+    // .enter()
+    // .append("g");
+    
+
+
+        
+    // Initialize neighborhood clusters
+    const clusters = g.append("g")
+        .attr("fill", "transparent")
+        .attr("cursor", "zoomed-in")
+          .selectAll("path")
+          .data(neighborhoods.features)
+          .join("path")
+          .on("mouseover", mouseOverEdge)
+          .on("mouseout", mouseOutEdge)
+          .on("wheel", mouseOutEdge) // remove the tooltip during scroll
+          .on("click", clicked);
+    
+    // Initialize circles (locations of each liquor licensee)
+    let circles = g.selectAll("circle")
+        .data(labels.features)
+        .enter()
+        .append("circle")
+        .on("mouseover", mouseOverNode)
+        .on("mouseout", mouseOutNode) // remove the tooltip during scroll
+        .on("wheel", mouseOutNode);
     /* ------------------------------- COLOR SCHEME ------------------------------- */
     // Get the color domain max for each simulation
     let color_domain_max = labels.features[0]['properties'].domain_max;
@@ -55,10 +88,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* -------------------------------------------------------------------------- */
     // synthetic circles 
     let synth_circles = () =>{
-        g.selectAll("circle")
-        .data(labels.features)
-        .enter()
-        .append("circle")
+        // circles.append("circles")
+        // g.selectAll("circle")
+        // .data(labels.features)
+        // .enter()
+        // .append("circle")
+        circles
         .attr("stroke", "black")
         .transition()
         .delay((d, i) => 3 * i)
@@ -66,33 +101,40 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
         .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
         .attr("r", 4)
-        .attr("stroke", "black")
+        .attr("stroke", "white")
         .attr("stroke-width", 0.5)
         .attr("fill", "transparent")};
     
     // Call this before drawing the real circles so they'd move back after scrolling up 
     let synth_circles_fast = () =>{
-        g.selectAll("circle")
+        // g.selectAll("circle")
+        circles
         .transition()
           .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
           .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
           .attr("r", 4)
-          .attr("stroke", "black")
+          .attr("stroke", "white")
           .attr("stroke-width", 0.5)
           .attr("fill", "transparent")
       };    
     
         
     let real_circles = () =>{
-        g.selectAll("circle")
+        // g.selectAll("circle")
+        circles
         .transition()
-          .duration(2000)
+        .duration(1000)
+        // .transition()
+        //   .duration(500)
           .attr("cx", function(d) {return projection(d.geometry.coordinates)[0]})
           .attr("cy", function(d) {return projection(d.geometry.coordinates)[1]})
-          .attr("r", 4)
-          .attr("stroke", "black")
-          .attr("stroke-width", 0.5)
-          .attr("fill", "transparent")
+        //   .attr("r", 4)
+        //   .attr("stroke", "white")
+        //   .attr("stroke-width", 0.5)
+        //   .attr("fill", "transparent")
+        .attr("stroke", "black")
+
+
       };       
 
       /* -------------------------------------------------------------------------- */
@@ -100,8 +142,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
       /* -------------------------------------------------------------------------- */
       // Draw map
       let draw_map = () =>{
-        // projection.fitSize([svg_width, svg_height],neighborhoods);
-        g.selectAll("path")
+          clusters
             .attr("d", path)
             .style("stroke", "white")
             .style("fill", "transparent") 
@@ -113,7 +154,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
         //  Function to color specific path on map 
     function highlight_neighborhood(object){
-        g.selectAll("path")
+        clusters
         .transition()
         .duration(1000)
         .style("fill", function(d) {
@@ -145,11 +186,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* -------------------------------------------------------------------------- */
 
     let clear_points = () =>{
-        g.selectAll("circle")
-        .style("fill", "transparent")
-        .style("stroke", "black")
+        circles
         .transition()
         .duration(2000)
+        .style("fill", "transparent")
+        .style("stroke", "black")
+
 
     }; 
 
@@ -159,18 +201,19 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     
     // Use this is the first div
     function delete_points(){
-        g.selectAll('circle')
+        circles
         .transition()
         .duration(2000)
         .remove();
     };
 
     function delete_map(){
-        clusters.selectAll("path")
-            .remove()
-            // .attr("d", path)
-            // .style("stroke", "transparent")
-            // .style("fill", "transparent") 
+        clusters
+        .attr("d", path)
+        .style("stroke", "none")
+        .style("fill", "none") 
+        .transition()
+        .duration(3000)
     };
 
 
@@ -192,7 +235,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     function color_points(type, index){
         to_color = get_color_domain(type,index);
-        g.selectAll("circle")
+        // g.selectAll("circle")
+        circles
         .transition()
         .duration(1000)
         .style("fill", function(d) { 
@@ -235,17 +279,10 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .scaleExtent([1, 8])
         .on("zoom", zoomed);
 
-    // Zoom to bounding box of each neighborhood
+    // Zoom to bounding box of each neighborhood cluster
     projection.fitSize([svg_width, svg_height],neighborhoods);
-        const clusters = g.append("g")
-        .attr("fill", "transparent")
-        .attr("cursor", "zoomed-in")
-          .selectAll("path")
-          .data(neighborhoods.features)
-          .join("path")
-          .on("mouseover", mouseOverEdge)
-          .on("mouseout", mouseOutEdge)
-          .on("click", clicked);
+    
+
                
     // Disable zoom on scroll 
     svg.call(zoom)
@@ -293,8 +330,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     function mouseOverNode(event, d){
         d3.select(this)
             .transition('mouseover').duration(100)
-            .attr('stroke-width', 5)
-            .attr('stroke', 'orange')
+            .attr('stroke-width', 1)
+            // .attr('stroke', 'orange')
                 
         d3.select('#tooltip')
             .style('left', (event.pageX + 10)+ 'px')
@@ -310,6 +347,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
         d3.select(this)
             .transition('mouseout').duration(100)
+            .attr('stroke-width', 0.5)
+
     };
 
     // This function highlights the neighborhood when it's being hovered over
@@ -331,6 +370,14 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         d3.select(this)
             .transition('mouseout').duration(100)
             .attr('stroke-width', 1)
+    };
+
+    function mouseMoveEdge(d, i){        
+        d3.select('#tooltip')
+        .style('display', 'none')
+        d3.select(this)
+        .transition('mousemove').duration(100)
+        .attr('stroke-width', 1)
     };
 
     /* -------------------------------------------------------------------------- */
