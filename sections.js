@@ -1,6 +1,8 @@
 // Global variables
-let neighborhoods, labels, color_domain_max, synth_color_domain_max;
-
+let neighborhoods, labels;
+// // things to display 
+// let color_domain_max, synth_color_domain_max, synth_noise, real_noise;
+// let simulation, min_samples, epsilon, min_sample_size; 
 // Needed for zoom
 let reset, zoomed, clicked;
 
@@ -37,6 +39,9 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // Set group element so the map & points can be resized together in zoom mode
     const g = svg.append("g");
 
+
+
+
     // let group = svg.selectAll('g')
     // .data(labels.features)
     // .enter()
@@ -70,10 +75,75 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .on("mouseover", mouseOverNode)
         .on("mouseout", mouseOutNode) // remove the tooltip during scroll
         .on("wheel", mouseOutNode);
+
+    let sim = g.append("text")
+        .attr('class', 'sim')
+        .attr('x', svg_width*.05)
+        .attr('y', 200)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })
+
+    let titles = g.append("text")
+        .attr('class', 'title')
+        .attr('x', svg_width*.05)
+        .attr('y', 50)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })
+
+    let noises_title = g.append("text")
+        .attr('class', 'noise')
+        .attr('x', svg_width*.05)
+        .attr('y', 70)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })
+
+    let min_samples_title = g.append("text")
+        .attr('class', 'noise')
+        .attr('x', svg_width*.05)
+        .attr('y', 90)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })
+
+    let epsilon_title = g.append("text")
+        .attr('class', 'noise')
+        .attr('x', svg_width*.05)
+        .attr('y', 110)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })   
+    
+    let min_cluster_size_title = g.append("text")
+        .attr('class', 'noise')
+        .attr('x', svg_width*.05)
+        .attr('y', 130)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d })
+
+    
+    // console.log(height);
+    // console.log(svg_height);
+
+    
+
     /* ------------------------------- COLOR SCHEME ------------------------------- */
     // Get the color domain max for each simulation
     let color_domain_max = labels.features[0]['properties'].domain_max;
     let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
+    // Get the number of noise points, simulation name, type & whatnot from the preprocessed data
+
+    let synth_noise = labels.features[0]['properties'].synth_noise;
+    let real_noise = labels.features[0]['properties'].real_noise;
+    let simulation = labels.features[0]['properties'].simulation;
+    let min_samples = labels.features[0]['properties'].min_samples;
+    let epsilon = labels.features[0]['properties'].epsilon;
+    let min_cluster_size = labels.features[0]['properties'].min_cluster_size;
+    let sel_method = labels.features[0]['properties'].sel_method;
+
+
+    
+
+
+   
+
 
     // Since some examples have many labels, I'm going to combine 2 color palletes
     var my_color_scheme1 = d3.schemeTableau10;
@@ -82,6 +152,15 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     // The labels generated from make_blob
     labeled_synth_color = d3.scaleOrdinal().domain([0,19]).range(my_colors);
+
+    // g.append('text')
+    // .attr('class', 'title')
+    // .attr('x', svg_width*.8)
+    // .attr('y', 50)
+    // .attr('text-anchor', 'middle')
+    // .text(function(d){
+    //     return get_clusters(1)
+    // });
 
     /* -------------------------------------------------------------------------- */
     /*                          FUNCTIONS TO DRAW CIRCLES                         */
@@ -164,7 +243,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             }
         )};
 
-
         function highlight_dupont(){
             highlight_neighborhood(14)
         };
@@ -178,7 +256,13 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .duration(2000)
         .style("fill", function(d) {
                 return labeled_synth_color(d.properties.synth_labels)
-            })
+            });
+        titles
+        .transition()
+        .duration(1000)
+        .text(function(d){
+            return "20 synthetic clusters" 
+        });
     }; 
 
     /* -------------------------------------------------------------------------- */
@@ -191,7 +275,31 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .duration(2000)
         .style("fill", "transparent")
         .style("stroke", "black")
-
+        titles
+        .transition()
+        .duration(1000)
+        .text(function(d){
+            return "No clustering in effect"});
+        noises_title
+        .transition()
+        .duration(1000)
+        .text("");
+        sim
+        .transition()
+        .duration(1000)
+        .text("");
+        min_samples_title
+        .transition()
+        .duration(1000)
+        .text("");
+        epsilon_title
+        .transition()
+        .duration(1000)
+        .text("");
+        min_cluster_size_title
+        .transition()
+        .duration(1000)
+        .text("");
 
     }; 
 
@@ -233,6 +341,43 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         return color_range
     };
 
+    // Function to get the number of clusters for each simulation
+    function get_clusters(type, index){
+        if (type == "synth"){
+            return synth_color_domain_max[index];
+        } else (type == "real")
+            return color_domain_max[index];
+    };
+    // Function to get the number of noise for each simulation
+    function get_noise(type, index){
+        if (type == "synth"){
+            return synth_noise[index];
+        } else (type == "real")
+            return real_noise[index];
+    };
+
+    // Get simulation parameteres - same for both
+    function get_sim(index){
+        return simulation[index];
+    };
+
+    function get_min_samples(index){
+        return min_samples[index];
+    };
+
+    function get_epsilon(index){
+        return epsilon[index];
+    };
+ 
+    function get_min_cluster_size(index){
+        return min_cluster_size[index];
+    };
+
+    function get_sel_method(index){
+        return sel_method[index];
+    };
+
+
     function color_points(type, index){
         to_color = get_color_domain(type,index);
         // g.selectAll("circle")
@@ -259,17 +404,83 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
                     return "white";
             } else {
                     return "black";
-                    // return to_color(d.properties.synth_labels_gen[index]);
             }}
             if (type == "real"){
                 if (d.properties.labels[index] ==-1) {
                     return "white";
             } else {
-                    // return to_color(d.properties.labels[index]);
                     return "black";
             }}
-        })
+        });
+    
     };
+
+    function update_title(type, index){
+        titles
+        .transition()
+        .duration(500)
+        .text(function(d){
+            return "Number of clusters: " +get_clusters(type, index)
+        });
+        };
+
+    function update_noise(type, index){
+        noises_title
+        .transition()
+        .duration(500)
+        .text(function(d){
+            return "Number of points counted as noise: " +get_noise(type, index)
+        });
+        };
+    
+    function update_sim(index){
+        sim
+        .transition()
+        .duration(500)
+        .text(function(d){
+            "Clustering method: " +get_sim(index)
+        });
+        };
+
+    console.log(update_sim(0));
+    
+
+
+    function update_epsilon(index){
+        epsilon_title
+        .transition()
+        .duration(500)
+        .text(function(d){
+            "Epsilon param: " +get_epsilon(index)
+        });
+        };
+    function update_min_samples(index){
+        min_samples_title
+        .transition()
+        .duration(500)
+        .text(function(d){
+            "Min samples: " +get_min_samples(index)
+        });
+        };
+
+    function update_min_cluster_size(index){
+        min_cluster_size_title
+        .transition()
+        .duration(500)
+        .text(function(d){
+            "Min cluster size: " +get_min_cluster_size(index)
+        });
+        };
+    
+
+    // console.log(update_title("synth",0));
+
+
+
+
+    // console.log("get_clusters", get_clusters(0));
+
+
 
     /* -------------------------------------------------------------------------- */
     /*                                    ZOOM                                    */
@@ -283,7 +494,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     projection.fitSize([svg_width, svg_height],neighborhoods);
     
 
-               
     // Disable zoom on scroll 
     svg.call(zoom)
         .on("wheel.zoom", null)
@@ -328,18 +538,19 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     // This function selects the circle and adds a border to help highlight selection
     // Additionally, a tooltip is transitioned in when selected to provide station details.
     function mouseOverNode(event, d){
+        // console.log(d.properties);
         d3.select(this)
             .transition('mouseover').duration(100)
             .attr('stroke-width', 1)
-            // .attr('stroke', 'orange')
                 
         d3.select('#tooltip')
             .style('left', (event.pageX + 10)+ 'px')
             .style('top', (event.pageY - 25) + 'px')
             .style('display', 'inline-block')
-            .html(`This is a point`) // Add tooltip for connected stations
-    }
+            .html(`${d.properties.TRADE_NAME}`) // Add tooltip for connected stations
+    };
 
+    // console.log(labels);
     // This function erases the tool tip display and resets the circle border to zero to remove the highlight.
     function mouseOutNode(d){
         d3.select('#tooltip')
@@ -399,43 +610,130 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* --------------- INITIALIZE COLOR STEPS TO USE WITH WAYPOINT -------------- */
     // Synthetic points colors
 
+
+
+
     function color_points_synth0(){
-        color_points("synth",0)
+        update_title("synth",0);
+        update_noise("synth",0);
+        update_sim(0);
+        update_epsilon(0);
+        update_min_samples(0);
+        update_min_cluster_size(0);
+        color_points("synth",0);
     };
     function color_points_synth1(){
-        color_points("synth",1)
+        update_sim(1);
+        update_epsilon(1);
+        update_min_samples(1);
+        update_min_cluster_size(1);
+        update_title("synth",1);
+        update_noise("synth",1);
+        color_points("synth",1);
     };
     function color_points_synth2(){
+        update_sim(2);
+        update_epsilon(2);
+        update_min_samples(2);
+        update_min_cluster_size(2);
+        update_title("synth",2);
+        update_noise("synth",2);
         color_points("synth",2)
     };
     function color_points_synth3(){
+
+        update_sim(3);
+        update_epsilon(3);
+        update_min_samples(3);
+        update_min_cluster_size(3);
+        update_title("synth",3);
+        update_noise("synth",3);
+
         color_points("synth",3)
     };
     function color_points_synth4(){
+        update_sim(4);
+        update_epsilon(4);
+        update_min_samples(4);
+        update_min_cluster_size(4);
+        update_title("synth",4);
+        update_noise("synth",4);
+
         color_points("synth",4)
     };
     function color_points_synth5(){
+        update_sim(5);
+        update_epsilon(5);
+        update_min_samples(5);
+        update_min_cluster_size(5);
+        update_title("synth",5);
+        update_noise("synth",5);
+
         color_points("synth",5)
     };
 
     // Real points colors
 
     function color_points_real0(){
+        update_sim(0);
+        update_epsilon(0);
+        update_min_samples(0);
+        update_min_cluster_size(0);
+        update_title("real",0);
+        update_noise("real",0);
+
         color_points("real",0)
     };
     function color_points_real1(){
+        update_sim(1);
+        update_epsilon(1);
+        update_min_samples(1);
+        update_min_cluster_size(1);
+        update_title("real",1);
+        update_noise("rea",1);
+
         color_points("real",1)
     };
     function color_points_real2(){
+        update_sim(2);
+        update_epsilon(2);
+        update_min_samples(2);
+        update_min_cluster_size(2);
+        update_title("real",2);
+        update_noise("real",2);
+
         color_points("real",2)
     };
     function color_points_real3(){
+        update_sim(3);
+        update_epsilon(3);
+        update_min_samples(3);
+        update_min_cluster_size(3);
+        update_title("real",3);
+        update_noise("real",3);
+
+
         color_points("real",3)
     };
     function color_points_real4(){
+        update_sim(4);
+        update_epsilon(4);
+        update_min_samples(4);
+        update_min_cluster_size(4);
+        update_title("real",4);
+        update_noise("real",4);
+
         color_points("real",4)
     };
     function color_points_real5(){
+        update_sim(5);
+        update_epsilon(5);
+        update_min_samples(5);
+        update_min_cluster_size(5);
+        update_title("real",5);
+        update_noise("real",5);
+
+
         color_points("real",5)
     };
 
