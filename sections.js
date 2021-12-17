@@ -38,23 +38,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     
     // Set group element so the map & points can be resized together in zoom mode
     const g = svg.append("g");
-
-
-
-
-    // let group = svg.selectAll('g')
-    // .data(labels.features)
-    // .enter()
-    // .append("g");
-
-    // group = group.selectAll('g')
-    // .data(neighborhoods.features)
-    // .enter()
-    // .append("g");
-    
-
-
-        
+     
     // Initialize neighborhood clusters
     const clusters = g.append("g")
         .attr("fill", "transparent")
@@ -76,47 +60,51 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .on("mouseout", mouseOutNode) // remove the tooltip during scroll
         .on("wheel", mouseOutNode);
 
+/* -------------------------------------------------------------------------- */
+/*            FUNCTIONS TO DISPLAY THE PARAMETERS OF THE SIMULATION           */
+/* -------------------------------------------------------------------------- */
     let sim = g.append("text")
-        .attr('class', 'sim')
-        .attr('x', svg_width*.05)
-        .attr('y', 200)
-        .attr('text-anchor', 'left')
-        .text(function(d) { return d })
-
-    let titles = g.append("text")
         .attr('class', 'title')
         .attr('x', svg_width*.05)
-        .attr('y', 50)
+        .attr('y', 30)
         .attr('text-anchor', 'left')
-        .text(function(d) { return d })
+        .attr('font-weight', 'bold')
+        .text(function(d) { return d });
 
-    let noises_title = g.append("text")
-        .attr('class', 'noise')
+    let cluster_title = g.append("text")
+        .attr('class', 'title')
         .attr('x', svg_width*.05)
         .attr('y', 70)
         .attr('text-anchor', 'left')
-        .text(function(d) { return d })
+        .text(function(d) { return d });
 
-    let min_samples_title = g.append("text")
-        .attr('class', 'noise')
+    let noise_title = g.append("text")
+        .attr('class', 'title')
         .attr('x', svg_width*.05)
-        .attr('y', 90)
+        .attr('y', 95)
         .attr('text-anchor', 'left')
-        .text(function(d) { return d })
+        .text(function(d) { return d });
 
     let epsilon_title = g.append("text")
-        .attr('class', 'noise')
+        .attr('class', 'title')
         .attr('x', svg_width*.05)
-        .attr('y', 110)
+        .attr('y', 140)
         .attr('text-anchor', 'left')
-        .text(function(d) { return d })   
+        .text(function(d) { return d });  
+    
+    let min_samples_title = g.append("text")
+        .attr('class', 'title')
+        .attr('x', svg_width*.05)
+        .attr('y', 165)
+        .attr('text-anchor', 'left')
+        .text(function(d) { return d }); 
     
     let min_cluster_size_title = g.append("text")
-        .attr('class', 'noise')
+        .attr('class', 'title')
         .attr('x', svg_width*.05)
-        .attr('y', 130)
+        .attr('y', 190)
         .attr('text-anchor', 'left')
-        .text(function(d) { return d })
+        .text(function(d) { return d });
 
     
     // console.log(height);
@@ -124,12 +112,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     
 
-    /* ------------------------------- COLOR SCHEME ------------------------------- */
-    // Get the color domain max for each simulation
-    let color_domain_max = labels.features[0]['properties'].domain_max;
-    let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
-    // Get the number of noise points, simulation name, type & whatnot from the preprocessed data
 
+    /* -------------------------------------------------------------------------------- */
+    /*                              PREPROCESSED PARAMETERS                             */
+    /* -------------------------------------------------------------------------------- */
+
+    // Get the number of noise points, simulation name, type & whatnot from the preprocessed data
     let synth_noise = labels.features[0]['properties'].synth_noise;
     let real_noise = labels.features[0]['properties'].real_noise;
     let simulation = labels.features[0]['properties'].simulation;
@@ -138,12 +126,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     let min_cluster_size = labels.features[0]['properties'].min_cluster_size;
     let sel_method = labels.features[0]['properties'].sel_method;
 
-
-    
-
-
-   
-
+   /* -------------------------------------------------------------------------- */
+   /*                                COLOR SCHEME                                */
+   /* -------------------------------------------------------------------------- */
+    // Get the color domain max for each simulation
+    let color_domain_max = labels.features[0]['properties'].domain_max;
+    let synth_color_domain_max = labels.features[0]['properties'].synth_domain_max;
 
     // Since some examples have many labels, I'm going to combine 2 color palletes
     var my_color_scheme1 = d3.schemeTableau10;
@@ -250,6 +238,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* -------------------------------------------------------------------------- */
     /*                    FUNCTIONS TO COLOR LABELED SYNTHETIC POINTS             */
     /* -------------------------------------------------------------------------- */
+    
+    // Need to clear all the text data
     let synth_color_init = () =>{
         g.selectAll("circle")
         .transition()
@@ -257,12 +247,30 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .style("fill", function(d) {
                 return labeled_synth_color(d.properties.synth_labels)
             });
-        titles
+        cluster_title
         .transition()
         .duration(1000)
-        .text(function(d){
-            return "20 synthetic clusters" 
-        });
+        .text("");
+        noise_title
+        .transition()
+        .duration(1000)
+        .text("");
+        sim
+        .transition()
+        .duration(1000)
+        .text("");
+        min_samples_title
+        .transition()
+        .duration(1000)
+        .text("");
+        epsilon_title
+        .transition()
+        .duration(1000)
+        .text("");
+        min_cluster_size_title
+        .transition()
+        .duration(1000)
+        .text("");
     }; 
 
     /* -------------------------------------------------------------------------- */
@@ -274,13 +282,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .transition()
         .duration(2000)
         .style("fill", "transparent")
-        .style("stroke", "black")
-        titles
+        .style("stroke", "black");
+        cluster_title
         .transition()
         .duration(1000)
-        .text(function(d){
-            return "No clustering in effect"});
-        noises_title
+        .text("");
+        noise_title
         .transition()
         .duration(1000)
         .text("");
@@ -380,7 +387,34 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     function color_points(type, index){
         to_color = get_color_domain(type,index);
-        // g.selectAll("circle")
+        
+        if (type == "real"){
+            sim
+            .attr('x', svg_width*.65)
+            .attr('y', 30)
+            .attr('text-anchor', 'right')
+            .attr('font-weight', 'bold');
+            cluster_title
+            .attr('x', svg_width*.65)
+            .attr('y', 70)
+            .attr('text-anchor', 'right')
+            noise_title
+            .attr('x', svg_width*.65)
+            .attr('y', 95)
+            .attr('text-anchor', 'right')
+            epsilon_title
+            .attr('x', svg_width*.65)
+            .attr('y', 140)
+            .attr('text-anchor', 'right')
+            min_samples_title
+            .attr('x', svg_width*.65)
+            .attr('y', 165)
+            .attr('text-anchor', 'right'); 
+            min_cluster_size_title
+            .attr('x', svg_width*.65)
+            .attr('y', 190)
+            .attr('text-anchor', 'right'); 
+        };       
         circles
         .transition()
         .duration(1000)
@@ -415,21 +449,21 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     
     };
 
-    function update_title(type, index){
-        titles
+    function update_cluster(type, index){
+        cluster_title
         .transition()
         .duration(500)
         .text(function(d){
-            return "Number of clusters: " +get_clusters(type, index)
+            return "Number of clusters found: " +get_clusters(type, index);
         });
         };
 
     function update_noise(type, index){
-        noises_title
+        noise_title
         .transition()
         .duration(500)
         .text(function(d){
-            return "Number of points counted as noise: " +get_noise(type, index)
+            return "Number of points counted as noise: " +get_noise(type, index);
         });
         };
     
@@ -438,20 +472,16 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .transition()
         .duration(500)
         .text(function(d){
-            "Clustering method: " +get_sim(index)
+            return "Clustering method: " +get_sim(index);
         });
         };
-
-    console.log(update_sim(0));
-    
-
 
     function update_epsilon(index){
         epsilon_title
         .transition()
         .duration(500)
         .text(function(d){
-            "Epsilon param: " +get_epsilon(index)
+            return "Epsilon: " +get_epsilon(index);
         });
         };
     function update_min_samples(index){
@@ -459,7 +489,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .transition()
         .duration(500)
         .text(function(d){
-            "Min samples: " +get_min_samples(index)
+            return "Min samples: " +get_min_samples(index);
         });
         };
 
@@ -468,7 +498,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .transition()
         .duration(500)
         .text(function(d){
-            "Min cluster size: " +get_min_cluster_size(index)
+            return "Min cluster size: " +get_min_cluster_size(index);
         });
         };
     
@@ -607,14 +637,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         });
     };
 
+
     /* --------------- INITIALIZE COLOR STEPS TO USE WITH WAYPOINT -------------- */
     // Synthetic points colors
 
-
-
-
     function color_points_synth0(){
-        update_title("synth",0);
+        update_cluster("synth",0);
         update_noise("synth",0);
         update_sim(0);
         update_epsilon(0);
@@ -627,7 +655,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(1);
         update_min_samples(1);
         update_min_cluster_size(1);
-        update_title("synth",1);
+        update_cluster("synth",1);
         update_noise("synth",1);
         color_points("synth",1);
     };
@@ -636,7 +664,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(2);
         update_min_samples(2);
         update_min_cluster_size(2);
-        update_title("synth",2);
+        update_cluster("synth",2);
         update_noise("synth",2);
         color_points("synth",2)
     };
@@ -646,7 +674,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(3);
         update_min_samples(3);
         update_min_cluster_size(3);
-        update_title("synth",3);
+        update_cluster("synth",3);
         update_noise("synth",3);
 
         color_points("synth",3)
@@ -656,7 +684,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(4);
         update_min_samples(4);
         update_min_cluster_size(4);
-        update_title("synth",4);
+        update_cluster("synth",4);
         update_noise("synth",4);
 
         color_points("synth",4)
@@ -666,7 +694,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(5);
         update_min_samples(5);
         update_min_cluster_size(5);
-        update_title("synth",5);
+        update_cluster("synth",5);
         update_noise("synth",5);
 
         color_points("synth",5)
@@ -679,7 +707,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(0);
         update_min_samples(0);
         update_min_cluster_size(0);
-        update_title("real",0);
+        update_cluster("real",0);
         update_noise("real",0);
 
         color_points("real",0)
@@ -689,7 +717,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(1);
         update_min_samples(1);
         update_min_cluster_size(1);
-        update_title("real",1);
+        update_cluster("real",1);
         update_noise("rea",1);
 
         color_points("real",1)
@@ -699,7 +727,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(2);
         update_min_samples(2);
         update_min_cluster_size(2);
-        update_title("real",2);
+        update_cluster("real",2);
         update_noise("real",2);
 
         color_points("real",2)
@@ -709,7 +737,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(3);
         update_min_samples(3);
         update_min_cluster_size(3);
-        update_title("real",3);
+        update_cluster("real",3);
         update_noise("real",3);
 
 
@@ -720,7 +748,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(4);
         update_min_samples(4);
         update_min_cluster_size(4);
-        update_title("real",4);
+        update_cluster("real",4);
         update_noise("real",4);
 
         color_points("real",4)
@@ -730,7 +758,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         update_epsilon(5);
         update_min_samples(5);
         update_min_cluster_size(5);
-        update_title("real",5);
+        update_cluster("real",5);
         update_noise("real",5);
 
 
@@ -743,7 +771,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     // Scroll steps
     new scroll('div1',"50%", synth_circles, delete_points);
-    new scroll('div4',"25%", synth_color_init, synth_circles);
+    new scroll('div4',"75%", synth_color_init, synth_circles);
     // new scroll('div5',"50%", color_points_synth0, synth_color_init);
     new scroll('div5',"75%", color_points_synth0, synth_color_init);
     new scroll('div7',"75%", color_points_synth1, color_points_synth0);
