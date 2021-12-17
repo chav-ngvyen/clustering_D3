@@ -65,7 +65,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 /* -------------------------------------------------------------------------- */
     let sim = g.append("text")
         .attr('class', 'title')
-        .attr('x', svg_width*.60)
+        .attr('x', svg_width*.05)
         .attr('y', 30)
         .attr('text-align', 'right')
         .attr('font-weight', 'bold')
@@ -73,36 +73,36 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
     let cluster_title = g.append("text")
         .attr('class', 'title')
-        .attr('x', svg_width*.60)
+        .attr('x', svg_width*.05)
         .attr('y', 70)
         .attr('text-align', 'right')
         .text(function(d) { return d });
 
     let noise_title = g.append("text")
         .attr('class', 'title')
-        .attr('x', svg_width*.60)
+        .attr('x', svg_width*.05)
         .attr('y', 95)
         .attr('text-align', 'right')
         .text(function(d) { return d });
-
+        
     let epsilon_title = g.append("text")
         .attr('class', 'title')
         .attr('x', svg_width*.60)
-        .attr('y', 140)
+        .attr('y', 70)
         .attr('text-align', 'right')
         .text(function(d) { return d });  
     
     let min_samples_title = g.append("text")
         .attr('class', 'title')
         .attr('x', svg_width*.60)
-        .attr('y', 165)
+        .attr('y', 95)
         .attr('text-align', 'right')
         .text(function(d) { return d }); 
     
     let min_cluster_size_title = g.append("text")
         .attr('class', 'title')
         .attr('x', svg_width*.60)
-        .attr('y', 190)
+        .attr('y', 120)
         .attr('text-align', 'right')
         .text(function(d) { return d });
 
@@ -126,7 +126,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     let min_cluster_size = labels.features[0]['properties'].min_cluster_size;
     let sel_method = labels.features[0]['properties'].sel_method;
     
-    console.log(labels.features[0]);
    /* -------------------------------------------------------------------------- */
    /*                                COLOR SCHEME                                */
    /* -------------------------------------------------------------------------- */
@@ -156,22 +155,19 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* -------------------------------------------------------------------------- */
     // synthetic circles 
     let synth_circles = () =>{
-        // circles.append("circles")
-        // g.selectAll("circle")
-        // .data(labels.features)
-        // .enter()
-        // .append("circle")
         circles
-        .attr("stroke", "black")
+        .attr("stroke", "white")
         .transition()
-        .delay((d, i) => 3 * i)
-        .duration(1000)
+        .delay((d, i) => 5 * i)
+        .duration(5000)
         .attr("cx", function(d) {return projection(d.properties.synth_coordinates)[0]})
         .attr("cy", function(d) {return projection(d.properties.synth_coordinates)[1]})
         .attr("r", 4)
         .attr("stroke", "white")
         .attr("stroke-width", 0.5)
-        .attr("fill", "transparent")};
+        .attr("fill","transparent");
+
+    };
     
     // Call this before drawing the real circles so they'd move back after scrolling up 
     let synth_circles_fast = () =>{
@@ -250,7 +246,8 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     let synth_color_init = () =>{
         g.selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(3000)
+        .style("stroke","black")
         .style("fill", function(d) {
                 return labeled_synth_color(d.properties.synth_labels)
             });
@@ -775,14 +772,14 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     /* ---------------------- ORDER OF EVENTS BASED ON DIV ---------------------- */
 
     // Scroll steps
-    new scroll('div1',"50%", synth_circles, delete_points);
-    new scroll('div4',"75%", synth_color_init, synth_circles);
-    new scroll('div6',"75%", color_points_synth0, synth_color_init);
-    new scroll('div8',"75%", color_points_synth1, color_points_synth0);
-    new scroll('div10',"75%", color_points_synth2, color_points_synth1);
-    new scroll('div12',"75%", color_points_synth3, color_points_synth2);
-    new scroll('div14',"75%", color_points_synth4, color_points_synth3);
-    new scroll('div16',"75%", color_points_synth5, color_points_synth4);
+    new scroll('div1',"75%", synth_circles, delete_points);
+    new scroll('div7',"95%", synth_color_init, synth_circles);
+    new scroll('div8',"50%", color_points_synth0, synth_color_init);
+    new scroll('div10',"50%", color_points_synth1, color_points_synth0);
+    new scroll('div12',"50%", color_points_synth2, color_points_synth1);
+    new scroll('div14',"50%", color_points_synth3, color_points_synth2);
+    new scroll('div16',"50%", color_points_synth4, color_points_synth3);
+    new scroll('div18',"50%", color_points_synth5, color_points_synth4);
 
 
 
@@ -790,17 +787,33 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
 
 
 
-    new scroll('div12',"75%", synth_circles_fast, clear_points);
-    new scroll('div14',"75%", delete_map, synth_circles_fast);
-    new scroll('div16',"75%", clear_points, delete_map);
-    new scroll('div18',"75%", real_circles, clear_points);
-    new scroll('div20',"75%", draw_map, real_circles);
-    new scroll('div22',"75%", color_points_real0, draw_map);
-    new scroll('div24',"75%", color_points_real1, color_points_real0);
-    new scroll('div26',"75%", color_points_real2, color_points_real1);
-    new scroll('div28',"75%", color_points_real3, color_points_real2);
-    new scroll('div30',"75%", draw_map, color_points_real3);
-    new scroll('div32',"75%", highlight_dupont, draw_map);
+
+
+
+    // new scroll('div6',"75%", color_points_synth0, synth_color_init);
+    // new scroll('div8',"75%", color_points_synth1, color_points_synth0);
+    // new scroll('div10',"75%", color_points_synth2, color_points_synth1);
+    // new scroll('div12',"75%", color_points_synth3, color_points_synth2);
+    // new scroll('div14',"75%", color_points_synth4, color_points_synth3);
+    // new scroll('div16',"75%", color_points_synth5, color_points_synth4);
+
+
+
+
+
+
+
+    // new scroll('div12',"75%", synth_circles_fast, clear_points);
+    // new scroll('div14',"75%", delete_map, synth_circles_fast);
+    // new scroll('div16',"75%", clear_points, delete_map);
+    // new scroll('div18',"75%", real_circles, clear_points);
+    // new scroll('div20',"75%", draw_map, real_circles);
+    // new scroll('div22',"75%", color_points_real0, draw_map);
+    // new scroll('div24',"75%", color_points_real1, color_points_real0);
+    // new scroll('div26',"75%", color_points_real2, color_points_real1);
+    // new scroll('div28',"75%", color_points_real3, color_points_real2);
+    // new scroll('div30',"75%", draw_map, color_points_real3);
+    // new scroll('div32',"75%", highlight_dupont, draw_map);
 
 
 

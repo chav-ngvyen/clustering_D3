@@ -53,9 +53,9 @@
             <p> 
             Thank you for checking out my project! <br><br><br>
 
-            I will give a brief overview of density-based clustering algorithms <br><br><br>
+            I will give an overview of 2 density-based clustering algorithms: <strong>DBSCAN</strong> and <strong>HDBSCAN</strong>.<br><br><br>
 
-            And demonstrate how they work with a set of interactive examples <br><br><br>
+            Through this <i>scrollybroad</i>, you will find demonstrations of how the algorithms work through self-updating visuals.<br><br><br>
 
             This is a scrolling page, so please <strong>scroll</strong> along! 
             </p>
@@ -114,72 +114,143 @@
               What do you know about them? <br> Close to <strong style="color: white">nothing</strong>, right?<br><br><br>
               If I gave you a <strong style="color: yellow">box</strong> <strong style="color: red;"> of </strong> <strong style="color: blue;"> crayons </strong> and ask you to color the <strong>clusters of points</strong>
               , would you be able to? <br> 
-              <strong style="color: white"> Probably! </strong><br><br><br>
-              That is because you can visually see the blobs of points on a <strong>2-dimensional plane.</strong> <br><br>
-
+              <strong style="color: white"> Probably! </strong><br><br>
+              Before discussing these synthetic clusters, let's briefly talk about one of the pioneers of density-based clustering algorithms: <strong style="color: white;"> DBSCAN. </strong>
             </p>
           </div>
 
           <div id = "div4"> 
-            <h2>Synthetic data points</h2><br><br>
-            <p>
-            You are looking at a set of <strong>2123</strong> synthetic data points I created using <strong> sklearn's make_blob</strong> function <br><br><br>
-            Because I created this dataset, I know exactly <strong> how many clusters </strong> the points could be grouped into. <br><br><br>
+          
+          <h2>Introducing <strong> DBSCAN</strong> </h2> <br>
+          <p> <strong>D</strong>ensity-<strong>b</strong>ased <strong>s</strong>patial <strong>c</strong>lustering of <strong>a</strong>pplications with <strong>n</strong>oise <br><br>
+            Identifies clusters by locating points in regions of high density that can be separated from another point in regions of lower density.<br><br><br>
 
-            There are <strong>20</strong> distinct clusters on screen, so let's color them accordingly!
-            </p>
+            <strong>How</strong>: <br><br>
+
+            1) Finds <strong>core points</strong> - objects with more than minimum number of neighbors within a certain radius.<br><br>
+        
+            2) Finds areas around the core point that satisfy minimum density calculated from radius and number of neighbors earlier. <br><br>
+
+            Two main <strong> tuning parameters </strong>: <br><br>
+
+            1) epsilon (radius) of a point in relation to another point to be considered as points in the same neighborhood. <strong> NOT </strong> the maximum bound on distances of points within a cluster. <br><br>
+            
+            2) min_samples: number of neighbors in a neighborhood for a point to be considered as a core point. This includes the point itself. <br><br>
+          </p>
           </div>
 
           <div id = 'div5'>
-            <h2>Introducing <strong> DBSCAN</strong> </h2> <br>
-            <p> <strong>D</strong>ensity-<strong>b</strong>ased <strong>s</strong>patial <strong>c</strong>lustering of <strong>a</strong>pplications with <strong>n</strong>oise <br><br>
-
-            
-              We need to a way to determine which group each point belongs to. <br>
-              This is where <strong> density-based clustering methods </strong> comes into play.
-            </p>
-          </div>
-
-          <div id = 'div6'>
-            <h2>Synthetic data</h2>
-
+            <br><br><br>
+            <h2> Synthetic data </h2>
             <p>
-              Because I generated the datapoints, I know what the labels are.
+            You have had a while to look at the synthic data points being generated, it's time for a <br><br>
+            
+            <strong>Pop quiz!!!</strong><br><br>
+
+            <strong> How many clusters </strong> do you think there are on the left side of your screen? <br><br><br>
+
+            To find out and get access to the rest of the article, click here to subscribe* </p>
+            * daily cat facts are included with the subscription. This is a feature, not a bug, so please stop emailing me about this.
+            
+            <p>
+            <strong style="color:white;">...</strong> <br><br><br>
+
+            I kid! I kid! <br><br><br>
+            
             </p>
+
+          </div>
+          
+          <div id = 'div6'>
+              <h2> Synthetic data </h2>
+            <p>
+              In this first example, we will examine <strong>2123 </strong>synthetic data points I generated using sklearn's built-in make_blobs function. <br><br><br>
+              
+              Unlike real world datasets where the outcome clusters are truly unlabeled (one of which you will interact with as you scroll down) <br><br><br>
+            
+              Because I created these datapoints, I know exactly <strong> how many cluster labels </strong> there are. <br><br><br>
+
+             <strong> 20. </strong><div class=""></div>
+
           </div>
 
           <div id = "div7">
-            <h2>DBSCAN 1</h2>
-
+            <h2><strong>20 clusters </strong> huh &#129300; </h2>
             <p>
-              DBSCAN 1
+              There are <strong>20</strong> distinct clusters on screen. What was your guess before? Not quite 20, was it? <br><br><br>
+              
+              On the left of the canvas, there is a cluster of blue and red point that sklearn assigned 2 different labels. <br><br>
+
+              We can identify a similar green-yellow blob on the right as well. <br><br>
+            
+              When creating the data, I only wanted 2 features for each datapoint so they would map out nicely on an XY plane (more on that later). <br><br>
+              
+              
+              One last thing to note is that I based the X & Y scale from GPS coordinates. <br><br><br>
+
+        
             </p>
           </div>
 
           <div id = "div8">
-            <h2>DBSCAN 2</h2>
-
-            <h2>Recolor the synthetic points</h2>
+            <h2>DBSCAN</h2>
             <p>
-              DBSCAN 
+              Next, let's see how DBSCAN does with this synthetic dataset. <br><br>
+
+              For this first simulation, I did an <strong "style=color:white;">eye test</strong> for each distinct blob of points I could identify. <br><br>
+              
+              I require the radius of a core point to be <strong>0.5</strong>(km). <br><br>
+              
+              And core points must have at least <strong>10 neighbors</strong> within the 0.5km radius. <br><br>
+              
+              The updated colors show that DBSCAN picked up <strong>17 clusters</strong> using these parameters. <br><br>
+
+              It found <strong>9</strong> points that couldn't be assigned a cluster number and marke them as noise. <br><br>
+
+              The main 17 clusters DBSCAN identified were inline with what I would have color the blobs had I had a <strong style="color: yellow">box</strong> <strong style="color: red;"> of </strong> <strong style="color: blue;"> crayons </strong>.
+              
             </p>
+              
           </div>
 
           <div id = "div9">
-            <h2>But what if our real world data is not like this?</h2>
+            <h2>DBSCAN... <strong> eyetest?</strong></h2>
 
             <p>
-              Tada
+            I hope you didn't immediately close this tab when I said "eyetest". <br><br>
+
+             Why would I want to do an eye test on <strong>fake</strong> unlabeled data (not really unlabeled) to give the 
+             model the parameters that would probably allow it to return the <strong>results I wanted?</strong> <br><br>
+
+             Wouldn't that defeat the whole point of applying <strong>unsupervised learning algorithms</strong> on <strong>unlabeled data</strong> 
+            to let the model to tell us correlations in the data that <strong>can't see</strong> with our own eyes? <br><br>
+
+            Yes, yes, and also yes. <br><br>
+
+            That's the point. Even though the synthethic data is practically unlabeled, I still have <i> domain expertise </i> over them (because I did spend a shameful amount of time playing with random seed and cluster standard devation to make the blobs obvious and confusing enough)<br><br>
+            
+            Now that we know DBSCAN can cluster blobs of points as well as an eyetest, let's throw more things at it!
+
+
             </p>
           </div>
 
           <div id = "div10">
-            Delete map
-            <h2>Explain cluster density</h2>
+            <h2>DBSCAN part 2</h2>
 
-            <h2>blah blah blah</h2>
             <p>
+              In the second simulation, I set more a <strong>liberal</strong> set of parameters: for a point to be a core point to start defining its neighborhood (clsuter), it only needs to have <strong>5 neighbors</strong> within a <strong>0.2km</strong> radius.<br><br>
+              
+              With the updated requirements, DBSCAN found 29 clusters, but also classify a lot more points as noise. The fewer number of neighbors and smaller radius requirements helped small inner clusters as <i> legitimate </i> clusters and disqualify many points outside on the edge of each blob. <br><br>
 
+              &#129300; <br><br>
+
+              &#129300; <br><br>
+
+              So I'm saying that setting a more liberal parameter to cluster the blobs would give 
+
+
+          
             </p>
           </div>
 
