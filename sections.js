@@ -70,7 +70,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .attr('text-align', 'right')
         .attr('font-weight', 'bold')
         .text(function(d) { return d });
-
+    
     let cluster_title = g.append("text")
         .attr('class', 'title')
         .attr('x', svg_width*.05)
@@ -380,33 +380,33 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     function color_points(type, index){
         to_color = get_color_domain(type,index);
         
-        if (type == "real"){
-            sim
-            .attr('x', svg_width*.55)
-            .attr('y', 30)
-            .attr('text-anchor', 'right')
-            .attr('font-weight', 'bold');
-            cluster_title
-            .attr('x', svg_width*.55)
-            .attr('y', 70)
-            .attr('text-anchor', 'right')
-            noise_title
-            .attr('x', svg_width*.55)
-            .attr('y', 95)
-            .attr('text-anchor', 'right')
-            epsilon_title
-            .attr('x', svg_width*.55)
-            .attr('y', 140)
-            .attr('text-anchor', 'right')
-            min_samples_title
-            .attr('x', svg_width*.55)
-            .attr('y', 165)
-            .attr('text-anchor', 'right'); 
-            min_cluster_size_title
-            .attr('x', svg_width*.55)
-            .attr('y', 190)
-            .attr('text-anchor', 'right'); 
-        };       
+        // if (type == "real"){
+        //     sim
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 30)
+        //     .attr('text-anchor', 'right')
+        //     .attr('font-weight', 'bold');
+        //     cluster_title
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 70)
+        //     .attr('text-anchor', 'right')
+        //     noise_title
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 95)
+        //     .attr('text-anchor', 'right')
+        //     epsilon_title
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 140)
+        //     .attr('text-anchor', 'right')
+        //     min_samples_title
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 165)
+        //     .attr('text-anchor', 'right'); 
+        //     min_cluster_size_title
+        //     .attr('x', svg_width*.55)
+        //     .attr('y', 190)
+        //     .attr('text-anchor', 'right'); 
+        // };       
         circles
         .transition()
         .duration(1000)
