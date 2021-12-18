@@ -16,26 +16,23 @@
     <link rel = "stylesheet" href="style.css">
     
     <!-- call to D3.js to use framework -->
-    <!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
-        <script src="Dependencies/package/dist/d3.min.js"></script>
-        <script src="Dependencies/topojson.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
 
-    <!-- <script src="//d3js.org/topojson.v1.min.js"></script> -->
-
-    <!-- JQuery and Waypoint -->
-    <!-- <script src='http://code.jquery.com/jquery-latest.min.js'/></script> -->
-    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js'/></script> -->
-    
     <!-- Waypoints for scrolling -->
-    <script src="Dependencies/imakewebthings-waypoints-34d9f6d/lib/noframework.waypoints.min.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/noframework.waypoints.js"></script>
     <!-- Color pallete  -->
-    <!-- <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> -->
-        <script src="Dependencies/d3-scale-chromatic-3.0.0"></script>
-
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <!-- Ignore missing Favicon error on Firefox-->
     <link rel="icon" href="data:;base64,=">
+
+    <!-- Local files for offline work -->
+    <!-- <script src="Dependencies/imakewebthings-waypoints-34d9f6d/lib/noframework.waypoints.min.js"></script> -->
+    <!-- <script src="Dependencies/d3-scale-chromatic-3.0.0"></script> -->
+    <!-- <script src="Dependencies/package/dist/d3.min.js"></script> -->
+    <!-- <script src="Dependencies/topojson.js"></script> -->
+    
+
     
 </head>
 
@@ -55,7 +52,7 @@
 
             I will give an overview of 2 density-based clustering algorithms: <strong>DBSCAN</strong> and <strong>HDBSCAN</strong>.<br><br><br>
 
-            Through this <i>scrollybroad</i>, you will find demonstrations of how the algorithms work through self-updating visuals.<br><br><br>
+            Throughout this <i>scrollybroad</i>, you will find demonstrations of how the algorithms work, guided mostly by self-updating visuals.<br><br><br>
 
             This is a scrolling page, so please <strong>scroll</strong> along! 
             </p>
@@ -79,7 +76,7 @@
             <strong>How many</strong> categories you can put your objects in
             <br><br><br>
             
-            And you also <strong>cannot</strong> look at the items <strong>individually</strong> to characterize them. 
+            And you also <strong>cannot</strong> examine each item <strong>individually</strong> to characterize them. 
 
             
 
@@ -94,7 +91,7 @@
 
             Clustering analysis can be thought of as <strong>classification</strong> techniques.<br><br><br>
             
-            Because the labels are <strong>derived</strong> from the data itself, it is <strong> unsupervised </strong>, meaning there are no outcomes (labels) to compared the clusters to. <br><br><br>
+            Because the labels are <strong>derived</strong> from the data itself, it is <strong> unsupervised</strong>, meaning there are no outcomes (labels) to compare the clusters to. <br><br><br>
 
             <strong>Popular</strong> clustering algorithms include: <br><br>
 
@@ -133,7 +130,7 @@
 
             Two main <strong> tuning parameters </strong>: <br><br>
 
-            1) epsilon (radius) of a point in relation to another point to be considered as points in the same neighborhood. <strong> NOT </strong> the maximum bound on distances of points within a cluster. <br><br>
+            1) epsilon (radius) of a point in relation to another point to be considered as points in the same neighborhood. <br><br>
             
             2) min_samples: number of neighbors in a neighborhood for a point to be considered as a core point. This includes the point itself. <br><br>
           </p>
@@ -143,19 +140,34 @@
             <br><br><br>
             <h2> Synthetic data </h2>
             <p>
-            You have had a while to look at the synthic data points being generated, it's time for a <br><br>
+            You have had a while to look at the synthetic data points being generated, it's time for a <br><br><br>
             
-            <strong>Pop quiz!!!</strong><br><br>
+            <strong style="color:#ffafd2">Pop quiz!!!</strong><br><br><br>
 
-            <strong> How many clusters </strong> do you think there are on the left side of your screen? <br><br><br>
+            <strong> How many </strong> clusters do you think there are? <br><br><br>
 
-            To find out and get access to the rest of the article, click here to subscribe* </p>
-            * daily cat facts are included with the subscription. This is a feature, not a bug, so please stop emailing me about this.
+            <strong> How many </strong> clusters did <i>sklearn</i> create? <br><br><br>
+
+
+            <u style ="color:#002d9c">To find out and get access to the rest of the article, click here to subscribe</u> </p>
+            <font style = "color:#ffafd2"> *daily cat facts are included with the subscription. This is a feature, not a bug, so please stop emailing me about this.</font><br>
+
             
             <p>
-            <strong style="color:white;">...</strong> <br><br><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">.</strong><br>
+            <strong style="color:#ffafd2">anyhoo</strong><br>
 
-            I kid! I kid! <br><br><br>
+            
+            
+            <br><br><br><br><br>
+
+
+
             
             </p>
 
@@ -168,9 +180,12 @@
               
               Unlike real world datasets where the outcome clusters are truly unlabeled (one of which you will interact with as you scroll down) <br><br><br>
             
-              Because I created these datapoints, I know exactly <strong> how many cluster labels </strong> there are. <br><br><br>
+              Because I created these datapoints, I know exactly <strong> how many cluster labels </strong> there are. <br>
 
-             <strong> 20. </strong><div class=""></div>
+            <h2> <strong style = "color:white"> 20 </strong></h2><br>
+
+              <p> You don't have to take my words for it though. Let's put some colors on them! </p>
+              
 
           </div>
 
@@ -195,11 +210,11 @@
           <div id = "div8">
             <h2>DBSCAN</h2>
             <p>
-              Next, let's see how DBSCAN does with this synthetic dataset. <br><br>
+              Next, let's see how DBSCAN deals with this synthetic dataset. <br><br>
 
-              For this first simulation, I did an <strong "style=color:white;">eye test</strong> for each distinct blob of points I could identify. <br><br>
+              For this first simulation, I did an <strong style="color:white;">eye test</strong> for each distinct blob of points I could identify. <br><br>
               
-              I require the radius of a core point to be <strong>0.5</strong>(km). <br><br>
+              I settled on the radius to be <strong>0.5</strong>(km) - because the points supposedly reflect coordinates that fit within the bounding box of a city I know, I thought 0.5km was a reasonable number . <br><br>
               
               And core points must have at least <strong>10 neighbors</strong> within the 0.5km radius. <br><br>
               
@@ -214,10 +229,10 @@
           </div>
 
           <div id = "div9">
-            <h2>DBSCAN... <strong> eyetest?</strong></h2>
+            <h2>DBSCAN... <strong> eye test?</strong></h2>
 
             <p>
-            I hope you didn't immediately close this tab when I said "eyetest". <br><br>
+            I hope you didn't immediately close this tab when I said "eye test". <br><br>
 
              Why would I want to do an eye test on <strong>fake</strong> unlabeled data (not really unlabeled) to give the 
              model the parameters that would probably allow it to return the <strong>results I wanted?</strong> <br><br>
@@ -225,213 +240,217 @@
              Wouldn't that defeat the whole point of applying <strong>unsupervised learning algorithms</strong> on <strong>unlabeled data</strong> 
             to let the model to tell us correlations in the data that <strong>can't see</strong> with our own eyes? <br><br>
 
-            Yes, yes, and also yes. <br><br>
-
-            That's the point. Even though the synthethic data is practically unlabeled, I still have <i> domain expertise </i> over them (because I did spend a shameful amount of time playing with random seed and cluster standard devation to make the blobs obvious and confusing enough)<br><br>
+            Yes, that was the whole point of the exercise. <br><br>
             
-            Now that we know DBSCAN can cluster blobs of points as well as an eyetest, let's throw more things at it!
+            I wanted to show that even though the dataset was unlabeled, <i>somebody</i> still had 
+            <strong>domain expertise</strong> over it. In this case, although the data was practically unlabeled, I did spend a shameful amount of time adjusting <i>random_seed</i> and <i>cluster_std</i> in sklearn to make them look just right. <br><br>
+
+            <!-- Clustering unlabeled data was never intended to be used as a tool to tell us what we don't know -  -->
+                        
+            After a domain expert on this synthethic dataset (me!) checked DBSCAN's clustering results and confirmed that it at least performs <strong>as well as an eye test</strong>, let's throw more things at it!
 
 
             </p>
           </div>
 
           <div id = "div10">
-            <h2>DBSCAN part 2</h2>
+            <h2>DBSCAN <strong>part 2</strong></h2>
 
             <p>
-              In the second simulation, I set more a <strong>liberal</strong> set of parameters: for a point to be a core point to start defining its neighborhood (clsuter), it only needs to have <strong>5 neighbors</strong> within a <strong>0.2km</strong> radius.<br><br>
+              In the second simulation, I set more a <strong>liberal</strong> set of parameters: for a point to be a core point to start defining its neighborhood (cluster), it only needs to have <strong>5 neighbors</strong> within a <strong>0.2km</strong> radius.<br><br>
               
-              With the updated requirements, DBSCAN found 29 clusters, but also classify a lot more points as noise. The fewer number of neighbors and smaller radius requirements helped small inner clusters as <i> legitimate </i> clusters and disqualify many points outside on the edge of each blob. <br><br>
-
+              Using the updated requirements, DBSCAN found 29 clusters but also classify a lot more points as <strong style="color: white">noise</strong>.<br><br>
+              
               &#129300; <br><br>
 
+              So <strong>fewer neighbors</strong> and <strong>smaller radius</strong> requirements simultaneous helped identifying small clusters in more densed areas as <i> legitimate </i> clusters while <strong>disqualifying</strong> more outter points on the edge of each blob. <br><br>
+
+              &#129300; <br><br>
+              
+              DBSCAN can disadvantage outlier points and count them as noise if they're not located close enough to so-called "core points?" <br><br>
+              
+              &#129300; <br><br>
+              &#129300; <br><br>
               &#129300; <br><br>
 
-              So I'm saying that setting a more liberal parameter to cluster the blobs would give 
 
-
-          
             </p>
           </div>
 
           <div id = "div11">
-            <h2>Draw the map here</h2>
 
-            <h2>blah blah blah</h2>
+            <h2>But</h2> <br> <br> 
+
+            <h2>What if</h2> <br> <br>
+
+            <h2>Your data</h2> <br> <br>
+
+            <h2>Looks like this</h2> <br> <br>
+
             <p>
+
+              &#129300; <br><br>
+
+              (I really hope that transformation worked on your browser or it would've been really awkward)
 
             </p>
           </div>
 
           <div id = "div12">
-            <h2>DBSCAN</h2>
+            
+             <h2> Clustering data with <strong>varying levels of sparsity.</strong></h2> 
+              <p>
+              Perhaps you are more familiar with maps where items are spread out in a fashion similar to this, as opposed to the defined blobs in the synthetic example above. <br><br>
 
-            <h2></h2>
-            <p>
+              Maps like this one are what you'd expect to see in reality, whether it's in a neighborhood, city, county, state, or country-level, even globally. <br><br>
+
+              A simple explanation is <strong>density varies</strong> from one area to another at any given levels of aggregation. <br><br>
+              
+              We saw how well DBSCAN does when given a reasonable set of parameters to work with, but struggle when it has to choose between <strong>points outside of the detetcted edge</strong> or <strong>smaller neighborhood clusters</strong>.
+
 
             </p>
           </div>
 
           <div id = "div13">
-            draw map
-            <h2>Second DBSCAN</h2>
-            <h2></h2>
-            <p>
+            <h2>Introducing Hierarchical DBSCAN</h2>
+              <p>
+              <strong style="color:white">HDBSCAN </strong> was developed as an extension to DBSCAN which incorporates an additional <strong>hierarchical component</strong> into the original algorithm. <br> <br>
+              
+              Instead using a radius cut-off, HDBSCAN <strong>prunes trees</strong>. <br><br><br>
+
+              HDBSCAN starts off similar to DBSCAN: Requires a minimum number of points or min_cluster_size to <strong>form a cluster.</strong> <br><br><br>
+              
+              Let's jump right into an example using this new set of points.<br><br>
+              
+              I will set min_cluster_size to 15. Let's see what happens.
+
 
             </p>
           </div>
 
           <div id = "div14">
-            <h2>HDBSCAN</h2>
-            <h2></h2>
+            <h2>HDBSCAN delivers!</h2>
             <p>
+              By allowing for varying levels of densities, HDBSCAN splits the <strong>2123</strong> points (yes, it's the same number of points as before) in <strong>47 clusters.</strong><br><br><br>
+
+              Do you notice anything familiar about these clusters after transformation? <br><br><br>
+
+              That looks like Washington, DC! <br><br><br>
+              
+              Okay, let's draw this out.
+
+              
             </p>
           </div>
 
           <div id = "div15">
-            <h2>Second HDBSCAN</h2>
-            <h2></h2>
+            <h2>A map of liquor license holders in DC</h2>
             <p>
+              A liquor license holder is an entity such as restaurant, liquor store, grocery store, brewery or catering business that are allowed to sell alcoholic beverages. <br><br>
+
+              The underlying map divides the city into 46 neighborhood clusters, which is defined as "cluster boundaries were established in the early 2000s based on the professional judgment of the staff of the Office of Planning as reasonably descriptive units of the City for planning purposes" <br><br>
+
+              Both datasets came from <a href="https://opendata.dc.gov">OpenDC</a> <br><br>
+
             </p>
           </div>
 
           <div id = "div16">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <h2>But why?</h2>
             <p>
+            GPS coordinates of liquor lincense holders sure seem like a random thing to cluster, yet there are <a href="https://code.dccouncil.us/us/dc/council/code/titles/25/chapters/3/">many factors</a> that can qualify or disqualify a business or individual from obtaining a liquor license. <br><br>
+            
+            1) GPS coordinates are 2-dimensional and latitude & longitude are well defined and easily understood and visualized <br><br>
+
+            2) The distance between 2 points on a sphere can be measured precisely using the Harvesince formula; <br><br>
+
+            3) We can visualize the output of clustering algorithms on a familiar map; <br><br>
+
+            4) Using neighborhood clusters defined by the Office of Planning as a stand-in for human judgment/ domain expertise, we visualize and compare the outputs of these clustering algorithms. <br><br>
+
+            5) The algorithms can only "see" as far as the longitude and latitude of each eastablishment. They are blind to uderlying factors like property value, criminal history of the applicant, or <a href="https://www.washingtonian.com/2021/03/22/dc-revokes-first-liquor-license-for-covid-violations-after-undercover-investigation/">covid violations</a>.<br><br>
+
+                      
             </p>
           </div>
 
           <div id = "div17">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <p> Did you notice a neighborhood borders changing color on your map? Please <strong>click </strong> on it! <p>
+
+            <h2>Congratulations, silent protagonist! You have unlocked the full map!</h2>
+            
             <p>
+              Feel free to <strong>drag</strong> your mouse pointer around to see other neighborhoods, <strong> double-click </strong> to reset the view, and <strong>click</strong> on other neighborhoods to zoom into their bounding box! <br><br>
+              
+              You can also <strong>hover</strong> your pointer on any point to see the name of the establishment and the <a href="https://abra.dc.gov/page/types-abc-licenses">class of their license</a>. <br><br>
+
+              I don't want to drag this post out for too long, so there will only be 3 more simulations after this. <br><br>
+              
+              You're almost at the end. It'll be worth it. <br><br>
             </p>
           </div>
 
           <div id = "div18">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <h2>DBSCAN revisited</h2>
             <p>
+              Using the first set of parameters for DBSCAN earlier (the "eyetest" parameters), the clustering performance is much worth on the 2123 real datapoints compared to the 2123 synthetic datapoints. <br><br>
+
+              Because DBSCAN <strong>does not perform density estimation in-between points </strong>- all neighbors within the 0.5km radius of a core point are considered to be in the same cluster. <br><br>
+
+              Essentially, this means that DBSCAN considers liquor license holders in Georgetown and Navy Yard to be in the same cluster.
             </p>
           </div>
 
           <div id = "div19">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <h2>DBSCAN revisited, part 2</h2>
             <p>
+              Setting a less strict definition of a cluster by dialing epsilon down to a radius of 0.2km and minimum samples of 5 somewhat improves DBSCAN's clustering performance. It now picks up 55 clusters, some of which do seem to be placed in different neighborhoods. <br><br>
+
+              However, the West End - Dupont Circle - Shaw - Chinatown areas, where restaurants are highly concentrated, are still jumbled together into one very large cluster by DBSCAN. 
             </p>
           </div>
 
           <div id = "div20">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <h2>HDBSCAN - Do we really need this?</h2>
             <p>
+              In this last, I set a very loose definition of a cluster for HDBSCAN, requiring min_cluster_size to be 5. <br><br>
+
+              To make the algorithm even more aggressive, I set min_samples to 2 - the default is set to be equal to min_cluster_size. <br><br> 
+              
+              The lower min_samples, <a href="https://hdbscan.readthedocs.io/en/latest/how_to_use_epsilon.html"> the more aggressive the algorithm </a> is in trying to put points into clusters instead of disregarding them as noise. <br><br>
+
+              In this case, HDBSCAN found 198 clusters of liquor license holders in Washington DC, which seems a little too high.
             </p>
           </div>
           
           <div id = "div21">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+            <h2>Conclusion</h2>
             <p>
+              I hope this scrollyboard was helpful in demonstrating how density-based clustering works. <br><br>
+
+              I also hope this provided you some new ideas on ways to test out unsupervised learning and unlabeled data <br><br>
+
+              
+
+              
             </p>
           </div>
 
-          <div id = "div22">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
+          <div id = "div_ref">
+            <h2>Inspirations & References</h2>
+            
             <p>
-            </p>
-          </div>
+              1) <a href="https://github.com/vegalla">Vince Egalla</a> whose confidence convinced me to think that I can pull off learning D3 and JavaScript in 2 weeks and offered me so much help along the way. <br><br>
+              2) The best tutorial on HDBSCAN on the internet by <a href = "https://hdbscan.readthedocs.io/en/latest/index.html"> the authors of the package themselves.  <br><br>
+              3) Baron Watt's <a href="https://bl.ocks.org/baronwatts/raw/2a50ae537d7c46670aa5eb30254ef751/?raw=true"> 
+              ScrollyTelling Example</a> using D3 and Waypoints <br><br>
+              4) <a href="https://observablehq.com/@d3/zoom-to-bounding-box"> D3 Zoom to Bounding Box </a> <br><br>
+              5) <a href="https://jsfiddle.net/mathyaku/L5bpaxwv/1/"> Moving Circles in D3 </a> <br><br>
+              6) <a href="https://github.com/automl/SMAC3/issues/453"> Github issue on converting geopandas with lists into GeoJSON </a> <br><br>
 
-          <div id = "div23">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div24">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div25">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div26">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div27">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div28">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div29">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div30">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-          
-          <div id = "div32">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div34">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div36">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div38">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
-            </p>
-          </div>
-
-          <div id = "div40">
-            <h2>Color dupont circle</h2>
-            <h2></h2>
-            <p>
+              And many more. This is a running list and will keep being updated.
+            
             </p>
           </div>
 
@@ -448,23 +467,31 @@
               <a href="https://github.com/aadams149">Alex Adams</a>, Gloria Li, and <a href="https://github.com/ringmatt">Matt Ring</a>. <br><br>
 
               
-              And everyone else. <br><br>
-              
-              Y'all are great - and I don't mean it lightly. <br><br>
-              It was all thanks to you that my first in-person semester did not suck. Thank you!
+              And everyone else. We've got really good folks in our cohort - thank you for making this semester great. <br><br>
+
             <p>
-              <div id = "div_ref">
-                <h2>
-                  References 
-                </h2>
-              </div>
+            </div>
+
 
               <div id = "div_me">
-                <h2>
-                  My links
-                </h2>
-                   
-              </div>
+                <h2>Final words</h2>
+                
+                <p> 
+                You've scrolled to the very end! You like me! You really like me! <br><br>
+
+                This was my first time setting up a Github page, using JavaScript, CSS, HTML, and D3, so I'm really thankful that you stuck with me to this very last div. <br><br>
+
+                Thank you for sitting through whatever <i>that</i> was. <br><br><br>
+
+                If you'd like to know more about me or my projects, here are some links: <br><br>
+
+
+                Go back to <a href="https://github.com/chav-ngvyen">my Github </a> <br><br>
+                  
+                Follow me on <a href="https://twitter.com/CHAV_NGVYEN">Twitter</a> where I mostly complain about Cal football (Go Bears!) </a> <br><br>
+                
+                Connect with me on <a href="https://www.linkedin.com/in/chavngvyen/">LinkedIn</a> <font style="color:#1192e8"> and hire me </font>
+              
             </p>
           </div>
 

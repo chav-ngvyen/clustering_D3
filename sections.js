@@ -107,10 +107,6 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .text(function(d) { return d });
 
     
-    // console.log(height);
-    // console.log(svg_height);
-
-    
 
 
     /* -------------------------------------------------------------------------------- */
@@ -184,21 +180,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     
         
     let real_circles = () =>{
-        // g.selectAll("circle")
         circles
         .transition()
         .duration(1000)
-        // .transition()
-        //   .duration(500)
           .attr("cx", function(d) {return projection(d.geometry.coordinates)[0]})
           .attr("cy", function(d) {return projection(d.geometry.coordinates)[1]})
-        //   .attr("r", 4)
-        //   .attr("stroke", "white")
-        //   .attr("stroke-width", 0.5)
-        //   .attr("fill", "transparent")
-        .attr("stroke", "black")
-
-
+          .attr("stroke", "white")
       };       
 
       /* -------------------------------------------------------------------------- */
@@ -207,11 +194,12 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
       // Draw map
       let draw_map = () =>{
           clusters
+            .transition()
+            .duration(1000)
             .attr("d", path)
             .style("stroke", "white")
             .style("fill", "transparent") 
-            .transition()
-            .duration(3000)
+
       };
 
       
@@ -221,7 +209,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         clusters
         .transition()
         .duration(1000)
-        .style("stroke", function(d) {
+        .style("fill", function(d) {
             if (d.properties.OBJECTID === object) {
                 return "black";
             }            
@@ -286,7 +274,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         .transition()
         .duration(2000)
         .style("fill", "transparent")
-        .style("stroke", "black");
+        .style("stroke", "white");
         cluster_title
         .transition()
         .duration(1000)
@@ -394,28 +382,28 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
         
         if (type == "real"){
             sim
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 30)
             .attr('text-anchor', 'right')
             .attr('font-weight', 'bold');
             cluster_title
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 70)
             .attr('text-anchor', 'right')
             noise_title
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 95)
             .attr('text-anchor', 'right')
             epsilon_title
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 140)
             .attr('text-anchor', 'right')
             min_samples_title
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 165)
             .attr('text-anchor', 'right'); 
             min_cluster_size_title
-            .attr('x', svg_width*.65)
+            .attr('x', svg_width*.55)
             .attr('y', 190)
             .attr('text-anchor', 'right'); 
         };       
@@ -581,7 +569,7 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
             .style('left', (event.pageX + 10)+ 'px')
             .style('top', (event.pageY - 25) + 'px')
             .style('display', 'inline-block')
-            .html(`${d.properties.TRADE_NAME}`) // Add tooltip for connected stations
+            .html(`${d.properties.TRADE_NAME}, class ${d.properties.CLASS}`) // Add tooltip for connected stations
     };
 
     // console.log(labels);
@@ -776,48 +764,15 @@ d3.json("GeoJSON/Neighborhood_Clusters.geojson").then(function(d){
     new scroll('div7',"95%", synth_color_init, synth_circles);
     new scroll('div8',"50%", color_points_synth0, synth_color_init);
     new scroll('div10',"50%", color_points_synth1, color_points_synth0);
-    new scroll('div12',"50%", color_points_synth2, color_points_synth1);
-    new scroll('div14',"50%", color_points_synth3, color_points_synth2);
-    new scroll('div16',"50%", color_points_synth4, color_points_synth3);
-    new scroll('div18',"50%", color_points_synth5, color_points_synth4);
-
-
-
-
-
-
-
-
-
-
-    // new scroll('div6',"75%", color_points_synth0, synth_color_init);
-    // new scroll('div8',"75%", color_points_synth1, color_points_synth0);
-    // new scroll('div10',"75%", color_points_synth2, color_points_synth1);
-    // new scroll('div12',"75%", color_points_synth3, color_points_synth2);
-    // new scroll('div14',"75%", color_points_synth4, color_points_synth3);
-    // new scroll('div16',"75%", color_points_synth5, color_points_synth4);
-
-
-
-
-
-
-
-    // new scroll('div12',"75%", synth_circles_fast, clear_points);
-    // new scroll('div14',"75%", delete_map, synth_circles_fast);
-    // new scroll('div16',"75%", clear_points, delete_map);
-    // new scroll('div18',"75%", real_circles, clear_points);
-    // new scroll('div20',"75%", draw_map, real_circles);
-    // new scroll('div22',"75%", color_points_real0, draw_map);
-    // new scroll('div24',"75%", color_points_real1, color_points_real0);
-    // new scroll('div26',"75%", color_points_real2, color_points_real1);
-    // new scroll('div28',"75%", color_points_real3, color_points_real2);
-    // new scroll('div30',"75%", draw_map, color_points_real3);
-    // new scroll('div32',"75%", highlight_dupont, draw_map);
-
-
-
-
+    new scroll('div11',"75%", clear_points, color_points_synth1);
+    new scroll('div12',"90%", real_circles, clear_points);
+    new scroll('div14',"50%", color_points_real2, real_circles);
+    new scroll('div15',"50%", draw_map, color_points_real2);
+    new scroll('div16',"50%", highlight_dupont, draw_map);
+    new scroll('div17',"50%", draw_map, highlight_dupont);
+    new scroll('div18',"50%", color_points_real0, draw_map);
+    new scroll('div19',"50%", color_points_real1, color_points_real0);
+    new scroll('div20',"50%", color_points_real3, color_points_real1);
 
 
 
